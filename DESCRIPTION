@@ -1,0 +1,49 @@
+Type: Package
+Package: mixr
+Title: Fit Mixed-Effects Models
+Version: 0.0.1
+Authors@R: c(
+    person(given = "Stu",
+           family = "Field",
+           role = c("aut", "cre", "cph"),
+           email = "stu.g.field@gmail.com",
+           comment = c(ORCID = "0000-0002-1024-5859"))
+    )
+Description: The mixr package fits linear mixed-effects models, centered around
+    the 'nlme' package. It is centered around fitting many models of identical
+    form, from a list of features as the response variable.
+License: GPL-3 | file LICENSE
+Depends:
+    R (>= 4.1.0),
+    globalr
+Imports:
+    dplyr,
+    nlme,
+    purrr,
+    rlang,
+    SomaDataIO,
+    tibble,
+    tidyr
+Suggests:
+    ggplot2,
+    glmmLasso,
+    gridExtra,
+    knitr,
+    lifecycle,
+    lintr,
+    MASS,
+    rmarkdown,
+    rsample,
+    SomaPlotr,
+    spelling,
+    testthat,
+    withr
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+LazyLoad: true
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1

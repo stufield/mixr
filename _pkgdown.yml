@@ -1,0 +1,71 @@
+url: https://confluence.sladmin.com/display/BITOOLS/somaverse
+
+home:
+  strip_header: true
+  links:
+  - text: Bitbucket
+    href: http://bitbucket.sladmin.com/projects/SV/repos/somamixedeffects/browse
+  - text: Report a bug
+    href: bitools@somalogic.com
+  - text: Learn more about SomaScan
+    href: http://www.somalogic.com
+
+template:
+  bootstrap: 5
+  bslib:
+  # bg: "#202123"      # dark theme
+  # fg: "#B8BCC2"      # dark theme
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+    base_font: {google: "Roboto"}
+
+authors:
+  Amanda Hiser:
+    href: https://github.com/amanda-hi
+
+development:
+  mode: auto
+
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+    - SomaMixedEffects
+
+reference:
+  - title: Fit Mixed-effects Models
+    desc: >
+      Fit an individual model (safely) or multiple models for
+      each ADAT feature as a list.
+    contents:
+    - starts_with("fit")
+    - crossValidateGlmmLasso
+
+  - title: Create Univariate Table
+    desc: >
+      Generate a `calc.*`-like table of univariate
+      mixed-effects models.
+    contents:
+    - createMixedEffectsTable
+    - plotMixedEffects
+
+  - title: Model Diagnostics
+    desc:  Model fitting diagnostics for LME models.
+    contents:
+    - lmeDiagnostic
+
+  - title: Simple LMEs
+    desc: >
+      Fit a simple LME model with various fixed- and random-effects.
+    contents:
+    - simpleLMEs
+
+  - title: Simulate Data
+    desc: >
+      Simulate longitudinal data with various covariance structures.
+    contents:
+    - simulateLongData
+
+news:
+  - one_page: true

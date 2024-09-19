@@ -1,0 +1,14 @@
+linters: linters_with_defaults(
+  defaults = somaverse::soma_linters(),
+  object_name_linter = NULL    # too many FPs
+  )
+exclusions: list(
+  "R/createMixedEffectsTable.R" = 157,
+  "R/crossValidateGlmmLasso.R" = 181,
+  "R/simulateLongData.R" = 27,
+  "tests/testthat/helper.R",
+  "tests/testthat.R",
+  "tests/testthat/test-fitGlmmLasso.R",
+  "tests/testthat/test-crossValidateGlmmLasso.R",
+  "tests/testthat/test-createMixedEffectsTable.R"
+  )

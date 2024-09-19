@@ -1,0 +1,8 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^Jenkinsfile-.*$
+^_pkgdown\.yml$
+^\.covrignore$
+^Makefile$
+^\.lintr$

@@ -1,0 +1,4 @@
+R/plotMixedEffects.R
+R/deprecated.R
+R/utils.R
+R/lmeDiagnostic.R

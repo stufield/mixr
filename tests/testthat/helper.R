@@ -1,0 +1,72 @@
+# Use instead of expect_write_output() w/ testthat e3
+# https://testthat.r-lib.org/reference/expect_snapshot_file.html
+expect_snapshot_csv <- function(code, name) {
+  name <- paste0(name, ".csv")
+  # Announce the file before touching `code`. This way, if `code`
+  # unexpectedly fails or skips, testthat will not auto-delete the
+  # corresponding snapshot file.
+  withr::defer(unlink(name, force = TRUE))
+  announce_snapshot_file(name = name)
+  path <- writeStatTable(code, file = name)
+  # Remove ^Date, User, System lines b/c the date line will change
+  # depending on when the test is executed or which OS
+  lines <- grep("^Date|^System|^User", read_text(path), value = TRUE, invert = TRUE)
+  write_text(path, lines, overwrite = TRUE)
+  expect_snapshot_file(path, name)
+}
+
+lme_data <- data.frame(
+  Pop = c("A","B","C","D","E","F",
+          "G","H","I","J","A","B","C","D","E","F","G",
+          "H","I","J","A","B","C","D","E","F","G","H",
+          "I","J","A","B","C","D","E","F","G","H","I","J"),
+  seq.1234.56 = c(31.4825165122558,
+                  28.8908634433824,23.2101863738196,23.0964161366396,
+                  18.9487545072777,26.6476233863295,25.0188549276012,
+                  29.7181602494346,27.5343384965478,30.4339220763191,29.6391444110278,
+                  24.8800721762738,23.7364531081978,22.4794210219209,
+                  25.9870522667863,22.2331601775267,23.4428340724496,
+                  29.7774760928255,26.7410901840321,22.1496123345554,
+                  25.9382304303429,22.9272709115154,32.4672022503726,
+                  29.104620334384,27.6136634624091,24.1932195735922,
+                  25.3072009579215,17.3569111222262,23.3667894484306,
+                  30.9008594329165,23.0122767592134,24.8363994453049,
+                  24.4505679433565,30.6078485397729,27.6902878574953,22.2992972527548,
+                  22.792613059123,22.0940179153982,22.9311054160759,
+                  28.4337989236665),
+  seq.6969.4 = c(24.0075921011194,
+                 23.8413734705988,21.9722897997245,24.1996218627294,
+                 25.6520925004477,23.843248986624,23.8690887666365,24.5509632728602,
+                 27.4959496395009,23.1335052457865,23.825298438875,
+                 25.3672458363344,24.7841692472067,22.5870528745823,
+                 26.4273699577029,22.2713024632951,27.6755075576963,
+                 27.8307090405213,27.2360781664384,24.4291007170575,
+                 23.6359374829815,24.4928588387892,22.8821747213173,
+                 25.3263143312874,26.0051892557415,24.5682109327394,
+                 25.7039552431082,24.2948928589989,24.6411011214884,
+                 24.3288062672951,24.071755513907,25.3794445771834,23.8699477374897,
+                 26.0984152788014,24.3961199308384,20.7654998220286,
+                 25.6944607411138,28.1993045890982,24.5942699688177,
+                 25.3727880236155),
+  TimePoint = factor(c("baseline","baseline","baseline","baseline",
+                       "baseline","baseline","baseline","baseline",
+                       "baseline","baseline","6 months","6 months",
+                       "6 months","6 months","6 months","6 months",
+                       "6 months","6 months","6 months","6 months",
+                       "12 months","12 months","12 months",
+                       "12 months","12 months","12 months","12 months",
+                       "12 months","12 months","12 months",
+                       "24 months","24 months","24 months","24 months",
+                       "24 months","24 months","24 months",
+                       "24 months","24 months","24 months"),
+                     levels = c("baseline", "6 months", "12 months", "24 months")),
+  Response = factor(c("Control", "Disease","Control","Control","Disease",
+                      "Disease","Control","Control","Disease",
+                      "Disease","Disease","Disease","Disease",
+                      "Control","Control","Control","Disease",
+                      "Control","Control","Control","Disease",
+                      "Disease","Control","Control","Control","Disease",
+                      "Disease","Disease","Control","Control",
+                      "Disease","Disease","Disease","Control",
+                      "Control","Disease","Control","Disease", "Control","Disease"))
+)
