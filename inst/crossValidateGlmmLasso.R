@@ -58,7 +58,6 @@
 #' @importFrom dplyr select filter bind_rows starts_with all_of
 #' @importFrom tidyr unnest
 #' @importFrom stats cor
-#' @importFrom SomaDataIO addClass
 #' @export
 crossValidateGlmmLasso <- function(data,
                                    fixed,
@@ -233,7 +232,7 @@ crossValidateGlmmLasso <- function(data,
   out$.repeats    <- .repeats
   out$random_seed <- r.seed
   out$weights     <- dots$weights
-  addClass(out, "cvGlmmLasso")
+  add_class(out, "cvGlmmLasso")
 }
 
 
@@ -282,7 +281,6 @@ print.cvGlmmLasso <- function(x, ...) {
 #' @importFrom rlang syms
 #' @importFrom tidyr drop_na unnest
 #' @importFrom stats quantile setNames
-#' @importFrom SomaDataIO addClass
 #' @export
 summary.cvGlmmLasso <- function(object, CIalpha = 0.05, ...) {
 
@@ -394,5 +392,5 @@ summary.cvGlmmLasso <- function(object, CIalpha = 0.05, ...) {
       dplyr::ungroup()
   }
 
-  addClass(out, "summary_cvGlmmLasso")
+  add_class(out, "summary_cvGlmmLasso")
 }

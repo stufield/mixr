@@ -7,7 +7,7 @@ expect_snapshot_csv <- function(code, name) {
   # corresponding snapshot file.
   withr::defer(unlink(name, force = TRUE))
   announce_snapshot_file(name = name)
-  path <- writeStatTable(code, file = name)
+  path <- write_stat_tbl(code, file = name)
   # Remove ^Date, User, System lines b/c the date line will change
   # depending on when the test is executed or which OS
   lines <- grep("^Date|^System|^User", read_text(path), value = TRUE, invert = TRUE)

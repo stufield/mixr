@@ -42,7 +42,6 @@
 #' @importFrom stats p.adjust anova runif setNames
 #' @importFrom dplyr sym mutate arrange row_number select everything
 #' @importFrom dplyr ends_with starts_with filter row_number bind_rows
-#' @importFrom SomaDataIO col2rn rn2col addClass
 #' @export
 createMixedEffectsTable <- function(x) {
 
@@ -104,9 +103,9 @@ createMixedEffectsTable <- function(x) {
   pids                  <- dims$ngrps[dims$Q[1L]]
   ret.list$PIDfield     <- attributes(x)$PIDfield
   ret.list$subjects     <- unname(pids)
-  if ( withr::with_preserve_seed(runif(1) < 0.25) ) somaPraise()
+  if ( withr::with_preserve_seed(runif(1) < 0.25) ) gPraise()
   ret.list |>
-    addClass(c("stat_table", "mixed_effects_table"))
+    add_class(c("stat_table", "mixed_effects_table"))
 }
 
 #' @order 3
@@ -138,15 +137,12 @@ print.mixed_effects_table <- function(x, n = 6, ...) {
 
 #' @order 4
 #' @describeIn fitMixedEffectsModels
-#' The S3 `writeStatTable()` method for `mixed_effects_table` class.
+#' The S3 `write_stat_tbl()` method for `mixed_effects_table` class.
 #'
 #' @param file A file name to write table output, typically a `*.csv`.
-#' @examples
-#' # S3 writeStatTable method
-#' f_out <- tempfile("lme-table-", fileext = ".csv")
-#' writeStatTable(lme_tab, file = f_out)
+#' @importFrom withr local_output_sink
 #' @export
-writeStatTable.mixed_effects_table <- function(x, file) {   # nolint
+write_stat_tbl.mixed_effects_table <- function(x, file) {   # nolint
   withr::local_output_sink(file, append = TRUE)
   cat("Optim method,", x$method, "\n", sep = "")
   cat("Fixed effects,", x$fixed, "\n", sep = "")
@@ -154,7 +150,7 @@ writeStatTable.mixed_effects_table <- function(x, file) {   # nolint
   cat("Subject field,", x$PIDfield, "\n", sep = "")
   cat("Number of subjects,", x$subjects, "\n", sep = "")
   cat("Number of observations,", x$observations, "\n\n", sep = "")
-  renameStatTable(x$stat.table) |> rn2col("AptName") |>
+  rename_stat_tbl(x$stat.table) |> rn2col("AptName") |>
     format(digits = 7L) |>
     write_uni_table(file = file)
   invisible(file)

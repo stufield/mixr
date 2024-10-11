@@ -23,7 +23,8 @@ Imports:
     rlang,
     SomaDataIO,
     tibble,
-    tidyr
+    tidyr,
+    withr
 Suggests:
     ggplot2,
     glmmLasso,
@@ -36,8 +37,7 @@ Suggests:
     rsample,
     SomaPlotr,
     spelling,
-    testthat,
-    withr
+    testthat
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

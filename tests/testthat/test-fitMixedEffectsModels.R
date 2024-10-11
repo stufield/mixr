@@ -1,7 +1,7 @@
 
 # Setup ----
 withr::local_options(list(signal.quiet = TRUE))
-apts   <- SomaDataIO::getAnalytes(lme_data)
+apts   <- getAnalytes(lme_data)
 models <- fitMixedEffectsModels(lme_data, fixed = "TimePoint*Response",
                                 random = "~ 1 | Pop")
 

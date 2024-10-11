@@ -44,7 +44,6 @@
 #' model3
 #'
 #' @importFrom stats setNames
-#' @importFrom SomaDataIO addClass
 #' @export
 simpleLMEs <- function(data, response, fixed, grouping, random.slope = TRUE, ...) {
 
@@ -87,7 +86,7 @@ simpleLMEs <- function(data, response, fixed, grouping, random.slope = TRUE, ...
   ret$fixed        <- fixed
   ret$random       <- random_form
   ret$grouping     <- grouping
-  addClass(ret, "simpleLMEs")
+  add_class(ret, "simpleLMEs")
 }
 
 

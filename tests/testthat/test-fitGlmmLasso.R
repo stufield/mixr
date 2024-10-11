@@ -1,10 +1,10 @@
-skip("fix when SomaClassify conflict is resolved; see /inst")
+skip("fix when libml conflict is resolved; see /inst")
 
 # Setup ----
 log_data <- log10(splyr::sim_test_data)
 # bootstrap re-sample: n = 300
 log_data <- withr::with_seed(101, slice_sample(log_data, n = 300, replace = TRUE))
-apts     <- SomaDataIO::getAnalytes(log_data)
+apts     <- getAnalytes(log_data)
 myclassform <- createFormula("status", apts)
 myregform   <- createFormula("reg_response", apts)
 log_data$SiteId <- factor(log_data$SiteId)

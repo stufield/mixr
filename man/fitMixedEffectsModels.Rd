@@ -5,7 +5,7 @@
 \alias{fitMixedEffectsModels}
 \alias{createMixedEffectsTable}
 \alias{print.mixed_effects_table}
-\alias{writeStatTable.mixed_effects_table}
+\alias{write_stat_tbl.mixed_effects_table}
 \title{Fit Mixed-Effects Models}
 \usage{
 fitMixedEffectsModels(
@@ -19,7 +19,7 @@ createMixedEffectsTable(x)
 
 \method{print}{mixed_effects_table}(x, n = 6, ...)
 
-\method{writeStatTable}{mixed_effects_table}(x, file)
+\method{write_stat_tbl}{mixed_effects_table}(x, file)
 }
 \arguments{
 \item{data}{The \code{data.frame} containing RFU data to as columns.}
@@ -89,7 +89,7 @@ desired default.
 \itemize{
 \item \code{print(mixed_effects_table)}: There is a S3 print method for \code{mixed_effects_table} class.
 
-\item \code{writeStatTable(mixed_effects_table)}: The S3 \code{writeStatTable()} method for \code{mixed_effects_table} class.
+\item \code{write_stat_tbl(mixed_effects_table)}: The S3 \code{write_stat_tbl()} method for \code{mixed_effects_table} class.
 
 }}
 \examples{
@@ -116,9 +116,6 @@ lme_tab <- createMixedEffectsTable(models)
 # S3 print method
 lme_tab
 
-# S3 writeStatTable method
-f_out <- tempfile("lme-table-", fileext = ".csv")
-writeStatTable(lme_tab, file = f_out)
 }
 \seealso{
 \code{\link[=fit_lme_safely]{fit_lme_safely()}}
