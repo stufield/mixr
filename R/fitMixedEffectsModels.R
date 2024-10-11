@@ -34,12 +34,11 @@
 #' df$TimePoint <- factor(df$TimePoint, levels = c("baseline", "6 months",
 #'                                                 "12 months", "24 months"))
 #'
-#' models <- df[, c("TimePoint", "Response", "Pop", SomaDataIO::getAnalytes(df))] |>
+#' models <- df[, c("TimePoint", "Response", "Pop", globalr:::getAnalytes(df))] |>
 #'   fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 #' lapply(models, summary)
 #'
 #' @importFrom stats as.formula setNames
-#' @importFrom SomaDataIO getAnalytes
 #' @export
 fitMixedEffectsModels <- function(data, fixed = "TimePoint*SampleGroup",
                                   random = "~ 1 | pid", do.log) {

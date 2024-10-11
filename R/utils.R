@@ -7,3 +7,5 @@
   out <- expand.grid(..., KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
   as_tibble(out)
 }
+
+getAnalytes <- getFromNamespace("getAnalytes", "globalr")

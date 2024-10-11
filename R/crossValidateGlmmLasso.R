@@ -22,7 +22,7 @@
 #' @param decision.threshold Numeric. The decision threshold
 #'   to use for classification.
 #' @param subsample Character. The type of sub-sampling to perform.
-#'   See [splyr::sampleImbalance()] `method =` argument.
+#'   See [splyr::rebalance()] `method =` argument.
 #'   Defaults to "none" (`NULL`).
 #' @param r.seed Integer. Value to set the random seed.
 #' @param save.fits Logical. Should individual model fits for each
@@ -57,6 +57,8 @@
 #' @importFrom purrr pmap
 #' @importFrom dplyr select filter bind_rows starts_with all_of
 #' @importFrom tidyr unnest
+#' @importFrom splyr rebalance
+#' @importFrom libml calc_confusion calcEmpAUC
 #' @importFrom stats cor
 #' @export
 crossValidateGlmmLasso <- function(data,
@@ -92,7 +94,7 @@ crossValidateGlmmLasso <- function(data,
   stopifnot(inherits(fixed, "formula"), length(fixed) == 3L)
   responses <- all.vars(fixed[[2L]])
 
-  # used later in `sampleImbalance()`
+  # used later in `rebalance()`
   event <- responses[length(responses)]
 
   # check if this is classification or regression
@@ -132,11 +134,11 @@ crossValidateGlmmLasso <- function(data,
   # Internal closures
   .getClassificationMetrics <- function(split, mod, probs, event,
                                         decision.threshold, ...) {
-    auc <- SomaClassify::calcEmpAUC(truth = split[[event]], # 0/1 integer
-                                    predicted = probs,
-                                    pos.class = 1L)
+    auc <- libml::calcEmpAUC(truth = split[[event]], # 0/1 integer
+                             predicted = probs,
+                             pos.class = 1L)
     conf <- summary(
-      SomaClassify::calc_confusion(         # nolint
+      libml::calc_confusion(
         truth     = factor(split[[event]]), # nolint
         predicted = probs,
         cutoff    = decision.threshold,
@@ -186,7 +188,7 @@ crossValidateGlmmLasso <- function(data,
   metrics$fit <- purrr::pmap(metrics, function(.anal, .lambda, ...) {
     if ( !is.null(subsample) ) {
       .anal <- withr::with_seed(
-        r.seed + 1, splyr::sampleImbalance(.anal, event, subsample)
+        r.seed + 1, splyr::rebalance(.anal, event, subsample)
       )
     }
     dots$.data  <- .anal

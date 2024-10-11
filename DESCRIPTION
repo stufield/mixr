@@ -18,11 +18,12 @@ Depends:
     globalr
 Imports:
     dplyr,
+    libml,
     nlme,
     purrr,
     rlang,
-    SomaDataIO,
     tibble,
+    splyr,
     tidyr,
     withr
 Suggests:

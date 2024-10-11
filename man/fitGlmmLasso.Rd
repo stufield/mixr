@@ -31,4 +31,8 @@ A \code{glmmLasso} class object.
 From a \code{cvGlmmLasso} object, find the best parameters from the cross-
 validation and re-fit via \code{\link[glmmLasso:glmmLasso]{glmmLasso::glmmLasso()}}. See \verb{[crossValidateGlmmLasso()]}.
 }
+\seealso{
+Other GLMMlasso: 
+\code{\link{crossValidateGlmmLasso}()}
+}
 \concept{GLMMlasso}
