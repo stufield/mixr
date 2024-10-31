@@ -58,7 +58,7 @@
 #' @importFrom dplyr select filter bind_rows starts_with all_of
 #' @importFrom tidyr unnest
 #' @importFrom splyr rebalance
-#' @importFrom libml calc_confusion calcEmpAUC
+#' @importFrom libml calc_confusion calc_emp_auc
 #' @importFrom stats cor
 #' @export
 crossValidateGlmmLasso <- function(data,

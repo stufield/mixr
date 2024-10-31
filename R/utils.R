@@ -8,4 +8,4 @@
   as_tibble(out)
 }
 
-getAnalytes <- getFromNamespace("getAnalytes", "globalr")
+getAnalytes <- getFromNamespace("getAnalytes", "helpr")

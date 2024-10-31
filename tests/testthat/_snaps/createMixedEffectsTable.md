@@ -1,12 +1,5 @@
 # `fitMixedEffectsModels()` function creates correct values
 
-    
-    == Stat Table Info: Linear Mixed-effects Model =================================
-      Call                      lme.formula(fixed = frm, random = as.formula(random), data = data)
-      Data Dims                 40 x 5
-      Table Dims                2 x 10
-      Statistical Test          Linear Mixed-effects Model
-      Log Transform             FALSE
       Fixed effects             TimePoint*Response
       Random effects            ~ 1 | Pop
       Number of models          2

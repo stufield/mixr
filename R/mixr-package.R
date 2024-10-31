@@ -2,5 +2,5 @@
 #' @keywords internal package
 "_PACKAGE"
 
-#' @import globalr
+#' @import helpr
 NULL

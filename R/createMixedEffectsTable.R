@@ -9,8 +9,8 @@
 #' @order 2
 #' @rdname fitMixedEffectsModels
 #' @param x A list of mixed-effects models calculated
-#' using [fitMixedEffectsModels()]. Alternatively, an object of
-#' class `"mixed_effects_table"` for the S3 print method.
+#'   using [fitMixedEffectsModels()]. Alternatively, an object of
+#'   class `"mixed_effects_table"` for the S3 print method.
 #' @return A list object of class `mixed_effects_table` with the
 #' following components:
 #' \item{stat.table}{A data frame (table) of the results:
@@ -103,7 +103,7 @@ createMixedEffectsTable <- function(x) {
   pids                  <- dims$ngrps[dims$Q[1L]]
   ret.list$PIDfield     <- attributes(x)$PIDfield
   ret.list$subjects     <- unname(pids)
-  if ( withr::with_preserve_seed(runif(1) < 0.25) ) gPraise()
+  if ( withr::with_preserve_seed(runif(1) < 0.25) ) give_praise()
   ret.list |>
     add_class(c("stat_table", "mixed_effects_table"))
 }
@@ -134,24 +134,3 @@ print.mixed_effects_table <- function(x, n = 6, ...) {
   invisible(x)
 }
 
-
-#' @order 4
-#' @describeIn fitMixedEffectsModels
-#' The S3 `write_stat_tbl()` method for `mixed_effects_table` class.
-#'
-#' @param file A file name to write table output, typically a `*.csv`.
-#' @importFrom withr local_output_sink
-#' @export
-write_stat_tbl.mixed_effects_table <- function(x, file) {   # nolint
-  withr::local_output_sink(file, append = TRUE)
-  cat("Optim method,", x$method, "\n", sep = "")
-  cat("Fixed effects,", x$fixed, "\n", sep = "")
-  cat("Random effects,", x$random, "\n", sep = "")
-  cat("Subject field,", x$PIDfield, "\n", sep = "")
-  cat("Number of subjects,", x$subjects, "\n", sep = "")
-  cat("Number of observations,", x$observations, "\n\n", sep = "")
-  rename_stat_tbl(x$stat.table) |> rn2col("AptName") |>
-    format(digits = 7L) |>
-    write_uni_table(file = file)
-  invisible(file)
-}

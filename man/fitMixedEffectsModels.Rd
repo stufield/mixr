@@ -5,7 +5,6 @@
 \alias{fitMixedEffectsModels}
 \alias{createMixedEffectsTable}
 \alias{print.mixed_effects_table}
-\alias{write_stat_tbl.mixed_effects_table}
 \title{Fit Mixed-Effects Models}
 \usage{
 fitMixedEffectsModels(
@@ -18,8 +17,6 @@ fitMixedEffectsModels(
 createMixedEffectsTable(x)
 
 \method{print}{mixed_effects_table}(x, n = 6, ...)
-
-\method{write_stat_tbl}{mixed_effects_table}(x, file)
 }
 \arguments{
 \item{data}{The \code{data.frame} containing RFU data to as columns.}
@@ -41,8 +38,6 @@ class \code{"mixed_effects_table"} for the S3 print method.}
 \item{n}{Numeric. The number of rows to show in the S3 print method.}
 
 \item{...}{Additional arguments as required by default S3 print methods.}
-
-\item{file}{A file name to write table output, typically a \verb{*.csv}.}
 }
 \value{
 A list (invisibly) of fitted linear mixed-effects response models
@@ -89,8 +84,6 @@ desired default.
 \itemize{
 \item \code{print(mixed_effects_table)}: There is a S3 print method for \code{mixed_effects_table} class.
 
-\item \code{write_stat_tbl(mixed_effects_table)}: The S3 \code{write_stat_tbl()} method for \code{mixed_effects_table} class.
-
 }}
 \examples{
 df <- data.frame(
@@ -104,7 +97,7 @@ df <- data.frame(
 df$TimePoint <- factor(df$TimePoint, levels = c("baseline", "6 months",
                                                 "12 months", "24 months"))
 
-models <- df[, c("TimePoint", "Response", "Pop", globalr:::getAnalytes(df))] |>
+models <- df[, c("TimePoint", "Response", "Pop", helpr:::getAnalytes(df))] |>
   fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 lapply(models, summary)
 

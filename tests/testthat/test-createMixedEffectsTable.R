@@ -41,7 +41,4 @@ test_that("`fitMixedEffectsModels()` function creates correct values", {
 
   # Print method
   withr::with_options(list(signal.quiet = FALSE), expect_snapshot_output(lme_tab))
-
-  # Write method
-  expect_snapshot_csv(lme_tab, "lme_tbl")
 })
