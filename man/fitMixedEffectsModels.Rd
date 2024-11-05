@@ -97,7 +97,7 @@ df <- data.frame(
 df$TimePoint <- factor(df$TimePoint, levels = c("baseline", "6 months",
                                                 "12 months", "24 months"))
 
-models <- df[, c("TimePoint", "Response", "Pop", helpr:::getAnalytes(df))] |>
+models <- df[, c("TimePoint", "Response", "Pop", mixr:::get_analytes(df))] |>
   fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 lapply(models, summary)
 

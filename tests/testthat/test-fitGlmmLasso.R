@@ -1,10 +1,10 @@
 skip("fix when libml conflict is resolved; see /inst")
 
 # Setup ----
-log_data <- log10(splyr::sim_adat)
+log_data <- log_rfu(splyr::sim_adat)
 # bootstrap re-sample: n = 300
 log_data <- withr::with_seed(101, slice_sample(log_data, n = 300, replace = TRUE))
-apts     <- getAnalytes(log_data)
+apts     <- get_analytes(log_data)
 myclassform <- create_form("status", apts)
 myregform   <- create_form("reg_response", apts)
 log_data$SiteId <- factor(log_data$SiteId)

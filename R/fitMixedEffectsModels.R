@@ -34,7 +34,7 @@
 #' df$TimePoint <- factor(df$TimePoint, levels = c("baseline", "6 months",
 #'                                                 "12 months", "24 months"))
 #'
-#' models <- df[, c("TimePoint", "Response", "Pop", helpr:::getAnalytes(df))] |>
+#' models <- df[, c("TimePoint", "Response", "Pop", mixr:::get_analytes(df))] |>
 #'   fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 #' lapply(models, summary)
 #'
@@ -50,7 +50,7 @@ fitMixedEffectsModels <- function(data, fixed = "TimePoint*SampleGroup",
 
   fixed <- gsub("[[:space:]]", "", trimws(fixed))  # rm whitespace
 
-  out <- setNames(getAnalytes(data), getAnalytes(data)) |>
+  out <- setNames(get_analytes(data), get_analytes(data)) |>
     lapply(function(.apt) {
       signal_done("Fitting ...", value(.apt))
       frm <- as.formula(sprintf("%s ~ %s", .apt, fixed))
@@ -61,6 +61,6 @@ fitMixedEffectsModels <- function(data, fixed = "TimePoint*SampleGroup",
             fixed    = fixed,
             random   = random,
             PIDfield = gsub("^~.*\\| *", "", random),
-            log      = is.logspace(data),
+            log      = is_logspace(data),
             data.dim = dim(data)) |> invisible()
 }
