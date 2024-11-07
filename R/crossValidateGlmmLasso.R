@@ -3,41 +3,44 @@
 #' Fit cross-validated models for [glmmLasso::glmmLasso()].
 #'
 #' @family GLMMlasso
+#'
 #' @param data The `data.frame` containing RFU data to as columns.
-#' @param fixed Formula. The formula for the fixed effect. For
+#' @param fixed The formula for the fixed effect. For
 #'   classification problems, the LHS of the fixed formula (endpoint) needs to be
 #'   re-coded to 1 or 0 (not strings or factors).
 #' @param random List. Indicating the full formula for the random
 #'   effect. For `glmmLasso` the formula  should be of the format
 #'   `list(randomEffectTerm = ~1)`.
-#' @param family Which family of models to fit to the
+#' @param family `character(1)`. Which family of models to fit to the
 #'   generalized linear mixed model? This should be a `glm` family.
 #'   If no family is provided, a linear mixed
 #'   model is fit instead of a generalized linear mixed model.
-#' @param folds Integer. Number of folds to perform (k-fold cross-validation).
-#' @param .repeats Integer. Number of repeats to perform as part of
+#' @param folds `integer(1)`. Number of folds to perform (k-fold cross-validation).
+#' @param .repeats `integer(1)`. Number of repeats to perform as part of
 #'   repeated k-fold cross-validation. Default is 1 (no repeats).
 #' @param .lambda The values for lambda in the lasso:
 #'   default is \verb{[0, 0.01, 0.1, 1, 10, 100, 1000]}.
 #' @param decision.threshold Numeric. The decision threshold
 #'   to use for classification.
-#' @param subsample Character. The type of sub-sampling to perform.
+#' @param subsample `character(1)`. The type of sub-sampling to perform.
 #'   See [splyr::rebalance()] `method =` argument.
 #'   Defaults to "none" (`NULL`).
-#' @param r.seed Integer. Value to set the random seed.
-#' @param save.fits Logical. Should individual model fits for each
+#' @param r_seed `integer(1)`. Value to set the random seed.
+#' @param save_fits `logical(1)`. Should individual model fits for each
 #'   `<repeat/fold/tuning parameter>` iteration be saved?
-#' @param save.splits Logical. Should individual split data sets for each
-#'   `<repeat/fold/tuning parameter>` iteration be saved? Is the output
-#'   of [rsample::vfold_cv()] such that the splits need to be
-#'   passed to [rsample::analysis()] or [rsample::assessment()] to be accessed?
+#' @param save_splits `logical(1)`. Should individual split
+#'   data sets for each `<repeat/fold/tuning parameter>`
+#'   iteration be saved? Is the output of [rsample::vfold_cv()]
+#'   such that the splits need to be passed to
+#'   [rsample::analysis()] or [rsample::assessment()] to be accessed?
 #' @param ... Additional arguments passed to the underlying
 #'   [glmmLasso::glmmLasso()] model fitting function.
+#'
 #' @return A `cvGlmmLasso` class object with components:
-#' \item{metrics}{A `tibble` of cross-validation metrics.}
-#' \item{formula}{The mixed-effects model formula.}
-#' \item{model_type}{Either `classification` or `regression`.}
-#' \item{random_seed}{Random seed for the cross-validation folds.}
+#'   \item{metrics}{A `tibble` of cross-validation metrics.}
+#'   \item{formula}{The mixed-effects model formula.}
+#'   \item{model_type}{Either `classification` or `regression`.}
+#'   \item{random_seed}{Random seed for the cross-validation folds.}
 #'
 #' The `metrics` entry is a `tibble` where the number of rows is equal
 #' to the cross of `.repeats`, `folds`, and `.lambda` and
@@ -52,8 +55,10 @@
 #'     + A list column of `tibbles` of the data splits: `"vfold_cv"`, `"rsplit"`
 #'   * `fit` (optional)
 #'     + A list column of model fit objects (`glmmLasso`)
+#'
 #' @author Gargi Datta & Stu Field
 #' @seealso [fitGlmmLasso()]
+#'
 #' @importFrom purrr pmap
 #' @importFrom dplyr select filter bind_rows starts_with all_of
 #' @importFrom tidyr unnest
@@ -68,11 +73,11 @@ crossValidateGlmmLasso <- function(data,
                                    folds = 10,
                                    .repeats = 1,
                                    .lambda,
-                                   decision.threshold = 0.5,
+                                   decision_threshold = 0.5,
                                    subsample = NULL,
-                                   r.seed = 1234,
-                                   save.fits = FALSE,
-                                   save.splits = FALSE, ...) {
+                                   r_seed = 1234,
+                                   save_fits = FALSE,
+                                   save_splits = FALSE, ...) {
 
   dots  <- list(...)
 
@@ -89,8 +94,9 @@ crossValidateGlmmLasso <- function(data,
   }
 
   # pre-proccessing ----
-  # Find intersection of all variables and predictors and subset the unique
-  # ones to get the LHS of the formula (response variables)
+  #   Find intersection of all variables and predictors
+  #   and subset the unique ones to get the LHS of
+  #   the formula (response variables)
   stopifnot(inherits(fixed, "formula"), length(fixed) == 3L)
   responses <- all.vars(fixed[[2L]])
 
@@ -99,9 +105,9 @@ crossValidateGlmmLasso <- function(data,
 
   # check if this is classification or regression
   if ( all(unique(data[[event]]) %in% c(0,  1) ) || inherits(data[[event]], "factor") ) {
-    model.type <- "classification"
+    model_type <- "classification"
   } else {
-    model.type <- "regression"
+    model_type <- "regression"
   }
 
   if ( missing(.lambda) ) {
@@ -241,8 +247,10 @@ crossValidateGlmmLasso <- function(data,
 #' Check for `cvGlmmLasso` object
 #'
 #' For `is.cvGlmmLasso`: A logical test for objects of class `cvGlmmLasso`.
+#'
 #' @rdname crossValidateGlmmLasso
 #' @param x An object to be tested for class `cvGlmmLasso`.
+#'
 #' @export
 is.cvGlmmLasso <- function(x) inherits(x, "cvGlmmLasso")
 
@@ -250,9 +258,7 @@ is.cvGlmmLasso <- function(x) inherits(x, "cvGlmmLasso")
 #' @noRd
 #' @export
 print.cvGlmmLasso <- function(x, ...) {
-  writeLines(
-    signal_rule("Cross-validated Glmm Lasso", lty = "double", line_col = "blue")
-  )
+  signal_rule("Cross-validated Glmm Lasso", lty = "double", line_col = "blue")
   left <- c("Response",
             "Random effect",
             "Family",
@@ -268,17 +274,20 @@ print.cvGlmmLasso <- function(x, ...) {
   .todo <- function(.x, .y) signal_todo(.x, value(.y))
   invisible(liter(left, right, .todo))
   cat("\n")
-  writeLines(signal_rule("Metrics", line_col = "blue"))
+  signal_rule("Metrics", line_col = "blue")
   print(x$metrics)
-  writeLines(signal_rule(lty = "double", line_col = "green"))
+  signal_rule(lty = "double", line_col = "green")
   invisible(x)
 }
 
 
 #' @describeIn crossValidateGlmmLasso
-#' A S3 summary method for class `cvGlmmLasso`.
-#' @param object An object of class `cvGlmmLasso`.
-#' @param CIalpha Significance level of the confidence interval for `alpha`.
+#'   S3 summary method for class `cvGlmmLasso`.
+#'
+#' @param object A `cvGlmmLasso` class object.
+#' @param CIalpha Significance level of the confidence
+#'   interval for `alpha`.
+#'
 #' @importFrom dplyr select filter n any_of
 #' @importFrom rlang syms
 #' @importFrom tidyr drop_na unnest
@@ -312,8 +321,8 @@ summary.cvGlmmLasso <- function(object, CIalpha = 0.05, ...) {
   }
 
   # manage edge-case for all NAs within-group;
-  # avoids warning for `max(NA, na.rm = TRUE)` and breaking `dplyr::summarize()`
-  # x = double; y = function returning scalar
+  #   avoids warning for `max(NA, na.rm = TRUE)` and breaking `dplyr::summarize()`
+  #   x = double; y = function returning scalar
   `%na%` <- function(x, y) {
     if ( all(is.na(x)) ) NA_real_ else y(x, na.rm = TRUE)
   }

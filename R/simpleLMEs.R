@@ -1,9 +1,9 @@
 #' Create Simple lme Models
 #'
 #' Builds a series linear mixed-effects models of the form `Response ~
-#' Fixed Covariate | Grouping`. A single model or a set of models is built
-#' for each response in `responses`. The input data is stored along
-#' with names of the fixed covariate and grouping variables.
+#'   Fixed Covariate | Grouping`. A single model or a set of models is built
+#'   for each response in `responses`. The input data is stored along
+#'   with names of the fixed covariate and grouping variables.
 #'
 #' @param data Either a data frame or a *named* list of
 #'   `data.frame` objects. If a data frame is provided then a single lme model is
@@ -15,26 +15,29 @@
 #'   (e.g. `TimePoint`), typically the slope component of the model.
 #' @param grouping Character. The name of the variable indicating the groups
 #'   (e.g. `pid` or `subjectID`).
-#' @param random.slope Logical. Indicating whether subject specific slopes
+#' @param random_slope Logical. Indicating whether subject specific slopes
 #'   should be fit. Alternatively, subject specific offsets (intercept) are fit.
 #' @param ... Additional arguments passed to [fit_lme_safely()]
 #'   or is via the S3 plot method, passed to
 #'   \code{graphics::\link[graphics]{plot}}.
+#'
 #' @return A list with an element for each response in `responses` as well
 #'   as the fixed and grouping variables. If `data` is a data.frame or a
 #'   groupedData object then each of the response elements will be an lme model.
 #'   Otherwise if a list was provided for the `data` argument then the
 #'   response elements will be a list with an lme model for each data set in the
 #'   `data` list.
+#'
 #' @author Michael R. Mehan
 #' @seealso [fit_lme_safely()]
+#'
 #' @examples
 #' long  <- simulateLongData(r.seed = 101, beta1 = 50)
 #' model <- simpleLMEs(long, "yij", "time", "pid")
 #' model   # S3 print method
 #'
 #' # random offset
-#' model2 <- simpleLMEs(long, "yij", "time", "pid", random.slope = FALSE)
+#' model2 <- simpleLMEs(long, "yij", "time", "pid", random_slope = FALSE)
 #'
 #' # 2 data set option
 #' long2  <- simulateLongData(r.seed = 405, beta1 = 10)     # smaller beta1
@@ -45,7 +48,7 @@
 #'
 #' @importFrom stats setNames
 #' @export
-simpleLMEs <- function(data, response, fixed, grouping, random.slope = TRUE, ...) {
+simpleLMEs <- function(data, response, fixed, grouping, random_slope = TRUE, ...) {
 
   stopifnot(inherits(data, c("data.frame", "list")))
 
@@ -158,10 +161,8 @@ print.simpleLMEs <- function(x, ...) {
   respY <- x$response
 
   if ( x$compare_data ) {
-    writeLines(
-      signal_rule("Simple LMEs ... 2 data set model comparison",
-                  line_col = "blue", lty = "double")
-    )
+    signal_rule("Simple LMEs ... 2 data set model comparison",
+                line_col = "blue", lty = "double")
     nm <- names(x$data)
     n  <- lapply(x[[respY]], getN)
     comp <- paste(nm, collapse = " vs. ")
@@ -185,9 +186,7 @@ print.simpleLMEs <- function(x, ...) {
       paste0(key, "    ", value)
     )
   } else {
-    writeLines(
-      signal_rule("Simple LMEs standard model", line_col = "blue", lty = "double")
-    )
+    signal_rule("Simple LMEs standard model", line_col = "blue", lty = "double")
     .n     <- getN(x[[respY]])
     smry   <- summary(x[[respY]])
     values <- c(
@@ -200,10 +199,10 @@ print.simpleLMEs <- function(x, ...) {
       BIC              = round(smry$BIC, 2)
     )
     writeLines(paste(" ", pad(names(values), 22), values))
-    writeLines(signal_rule("Summary t-table", line_col = "blue"))
+    signal_rule("Summary t-table", line_col = "blue")
     print(smry$tTable)
   }
-  writeLines(signal_rule(line_col = "green", lty = "double"))
+  signal_rule(line_col = "green", lty = "double")
   invisible(x)
 }
 # nocov end

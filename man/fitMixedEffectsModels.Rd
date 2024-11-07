@@ -35,9 +35,11 @@ field \emph{must} be a column name in \code{data}.}
 using \code{\link[=fitMixedEffectsModels]{fitMixedEffectsModels()}}. Alternatively, an object of
 class \code{"mixed_effects_table"} for the S3 print method.}
 
-\item{n}{Numeric. The number of rows to show in the S3 print method.}
+\item{n}{\code{integer(1)}The number of rows to
+show in the S3 print method.}
 
-\item{...}{Additional arguments as required by default S3 print methods.}
+\item{...}{Additional arguments as required
+by default S3 print methods.}
 }
 \value{
 A list (invisibly) of fitted linear mixed-effects response models
@@ -49,14 +51,14 @@ following components:
 \describe{
 \item{Time effect:}{Both F-values and p-values for TimePoint}
 \item{Group effect:}{Both F-values and p-values for Group}
-\item{p.value:}{Unadjusted p-values for the KS-distances}
+\item{p_value:}{Unadjusted p-values for the KS-distances}
 \item{fdr:}{FDR adjustment to p-values}
-\item{p.bonferroni:}{Bonferroni corrected p-value}
+\item{p_bonferroni:}{Bonferroni corrected p-value}
 \item{rank:}{Ranking by the test significance.}
 }}
 \item{test}{The name of the model fit, "Linear Mixed-effects Model".}
 \item{call}{The direct call made the \code{\link[=fitMixedEffectsModels]{fitMixedEffectsModels()}}.}
-\item{data.dim}{The dimensions of the data frame.}
+\item{data_dim}{The dimensions of the data frame.}
 \item{method}{The fitting method used by \code{lme}.}
 \item{fixed}{The fixed-effects.}
 \item{observations}{The number of total observations.}
@@ -82,7 +84,7 @@ desired default.
 }
 \section{Functions}{
 \itemize{
-\item \code{print(mixed_effects_table)}: There is a S3 print method for \code{mixed_effects_table} class.
+\item \code{print(mixed_effects_table)}: S3 print method for \code{mixed_effects_table} class.
 
 }}
 \examples{
@@ -101,10 +103,8 @@ models <- df[, c("TimePoint", "Response", "Pop", mixr:::get_analytes(df))] |>
   fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 lapply(models, summary)
 
-# `soma_lme` class object
 class(models)
 
-# create table from `soma_lme` object
 lme_tab <- createMixedEffectsTable(models)
 # S3 print method
 lme_tab

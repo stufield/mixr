@@ -14,11 +14,11 @@ crossValidateGlmmLasso(
   folds = 10,
   .repeats = 1,
   .lambda,
-  decision.threshold = 0.5,
+  decision_threshold = 0.5,
   subsample = NULL,
-  r.seed = 1234,
-  save.fits = FALSE,
-  save.splits = FALSE,
+  r_seed = 1234,
+  save_fits = FALSE,
+  save_splits = FALSE,
   ...
 )
 
@@ -29,7 +29,7 @@ is.cvGlmmLasso(x)
 \arguments{
 \item{data}{The \code{data.frame} containing RFU data to as columns.}
 
-\item{fixed}{Formula. The formula for the fixed effect. For
+\item{fixed}{The formula for the fixed effect. For
 classification problems, the LHS of the fixed formula (endpoint) needs to be
 re-coded to 1 or 0 (not strings or factors).}
 
@@ -37,44 +37,46 @@ re-coded to 1 or 0 (not strings or factors).}
 effect. For \code{glmmLasso} the formula  should be of the format
 \code{list(randomEffectTerm = ~1)}.}
 
-\item{family}{Which family of models to fit to the
+\item{family}{\code{character(1)}. Which family of models to fit to the
 generalized linear mixed model? This should be a \code{glm} family.
 If no family is provided, a linear mixed
 model is fit instead of a generalized linear mixed model.}
 
-\item{folds}{Integer. Number of folds to perform (k-fold cross-validation).}
+\item{folds}{\code{integer(1)}. Number of folds to perform (k-fold cross-validation).}
 
-\item{.repeats}{Integer. Number of repeats to perform as part of
+\item{.repeats}{\code{integer(1)}. Number of repeats to perform as part of
 repeated k-fold cross-validation. Default is 1 (no repeats).}
 
 \item{.lambda}{The values for lambda in the lasso:
 default is \verb{[0, 0.01, 0.1, 1, 10, 100, 1000]}.}
 
-\item{decision.threshold}{Numeric. The decision threshold
-to use for classification.}
-
-\item{subsample}{Character. The type of sub-sampling to perform.
+\item{subsample}{\code{character(1)}. The type of sub-sampling to perform.
 See \code{\link[splyr:rebalance]{splyr::rebalance()}} \verb{method =} argument.
 Defaults to "none" (\code{NULL}).}
 
-\item{r.seed}{Integer. Value to set the random seed.}
+\item{r_seed}{\code{integer(1)}. Value to set the random seed.}
 
-\item{save.fits}{Logical. Should individual model fits for each
+\item{save_fits}{\code{logical(1)}. Should individual model fits for each
 \verb{<repeat/fold/tuning parameter>} iteration be saved?}
 
-\item{save.splits}{Logical. Should individual split data sets for each
-\verb{<repeat/fold/tuning parameter>} iteration be saved? Is the output
-of \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}} such that the splits need to be
-passed to \code{\link[rsample:as.data.frame.rsplit]{rsample::analysis()}} or \code{\link[rsample:as.data.frame.rsplit]{rsample::assessment()}} to be accessed?}
+\item{save_splits}{\code{logical(1)}. Should individual split
+data sets for each \verb{<repeat/fold/tuning parameter>}
+iteration be saved? Is the output of \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}
+such that the splits need to be passed to
+\code{\link[rsample:as.data.frame.rsplit]{rsample::analysis()}} or \code{\link[rsample:as.data.frame.rsplit]{rsample::assessment()}} to be accessed?}
 
 \item{...}{Additional arguments passed to the underlying
 \code{\link[glmmLasso:glmmLasso]{glmmLasso::glmmLasso()}} model fitting function.}
 
 \item{x}{An object to be tested for class \code{cvGlmmLasso}.}
 
-\item{object}{An object of class \code{cvGlmmLasso}.}
+\item{object}{A \code{cvGlmmLasso} class object.}
 
-\item{CIalpha}{Significance level of the confidence interval for \code{alpha}.}
+\item{CIalpha}{Significance level of the confidence
+interval for \code{alpha}.}
+
+\item{decision.threshold}{Numeric. The decision threshold
+to use for classification.}
 }
 \value{
 A \code{cvGlmmLasso} class object with components:
@@ -110,7 +112,7 @@ For \code{is.cvGlmmLasso}: A logical test for objects of class \code{cvGlmmLasso
 }
 \section{Functions}{
 \itemize{
-\item \code{summary(cvGlmmLasso)}: A S3 summary method for class \code{cvGlmmLasso}.
+\item \code{summary(cvGlmmLasso)}: S3 summary method for class \code{cvGlmmLasso}.
 
 }}
 \seealso{

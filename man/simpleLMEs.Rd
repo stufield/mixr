@@ -6,7 +6,7 @@
 \alias{print.simpleLMEs}
 \title{Create Simple lme Models}
 \usage{
-simpleLMEs(data, response, fixed, grouping, random.slope = TRUE, ...)
+simpleLMEs(data, response, fixed, grouping, random_slope = TRUE, ...)
 
 \method{plot}{simpleLMEs}(x, col = "blue", pt.col = "black", groups = NULL, ...)
 
@@ -27,7 +27,7 @@ variables.}
 \item{grouping}{Character. The name of the variable indicating the groups
 (e.g. \code{pid} or \code{subjectID}).}
 
-\item{random.slope}{Logical. Indicating whether subject specific slopes
+\item{random_slope}{Logical. Indicating whether subject specific slopes
 should be fit. Alternatively, subject specific offsets (intercept) are fit.}
 
 \item{...}{Additional arguments passed to \code{\link[=fit_lme_safely]{fit_lme_safely()}}
@@ -70,7 +70,7 @@ model <- simpleLMEs(long, "yij", "time", "pid")
 model   # S3 print method
 
 # random offset
-model2 <- simpleLMEs(long, "yij", "time", "pid", random.slope = FALSE)
+model2 <- simpleLMEs(long, "yij", "time", "pid", random_slope = FALSE)
 
 # 2 data set option
 long2  <- simulateLongData(r.seed = 405, beta1 = 10)     # smaller beta1
