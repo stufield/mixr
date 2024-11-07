@@ -88,43 +88,48 @@ from a list of features as the response variable.
 ## Useful functions in `mixr`
 
 * `fit_lme_safely()`
-* `fitMixedEffectsModels()`
-* `createMixedEffectsTable()`
-* `simpleLMEs()`
-* `lmeDiagnostic()`
-* `simulateLongData()`
+* `fit_mixed_effects_models()`
+* `create_mixed_effects_tbl()`
+* `simple_lme()`
+* `lme_diagnostic()`
+* `simulate_long_data()`
+* `create_long_data()`
 
 
--------------------
+--------------
 
 
 # Mixed-effects Models
 ## Model Specification in `R`
+
 The syntax is the same whether using the `nlme` or `lme4` package. R uses 
 the Wilkinson notation in specifying model formulas.
 
 #### Random Intercept
+
 ```{r, eval = FALSE}
 lme(y ∼ time * group, random = ∼1 | pid, data = adat)
 ```
 
 #### Random Slope
+
 ```{r, eval = FALSE}
 lme(y ∼ time * group, random = ∼time | pid, data = adat)
 ```
 
 #### Random Intercept & Random Slope
+
 ```{r, eval = FALSE}
 lme(y ∼ time * group, random = ∼1 + time | pid, data = adat)
 ```
 
 #### Syntax Definitions
 
-| Symbol       |                 | Corresponds to |
-| ------------ | --------------- |:--------------:|
-| $y$          | $\rightarrow$   | $y_{ij}$       |
-| $∼ 1$        | $\rightarrow$   | random effects ($b_{0i}$) |
-| `pid`        | $\rightarrow$   | field containing the dependent groups (subjects) |
+| Symbol         |               | Corresponds to |
+| -------------- | ------------- |:--------------:|
+| $y$            | $\rightarrow$ | $y_{ij}$       |
+| $∼ 1$          | $\rightarrow$ | random effects ($b_{0i}$) |
+| `pid`          | $\rightarrow$ | field containing the dependent groups (subjects) |
 | `time * group` | $\rightarrow$ | fixed effects (with interaction term) |
 | `time * group` | $\rightarrow$ | `time + group + time * group` |
 
@@ -134,22 +139,23 @@ lme(y ∼ time * group, random = ∼1 + time | pid, data = adat)
 
 
 # Example 1: Response to Drug
+
 First, simulate longitudinal data for 20 subjects, having $3-10$ serial
 samples each, intercept ($\beta_0 = 1000$), slope ($\beta_1 = 400$),
 and a serial autocorrelation parameter of 0.1. The default 
 simulation values can be seen below:
 
 ```{r args}
-args(simulateLongData)
+args(simulate_long_data)
 ```
 
 
 ```{r simulate_data1, warning = FALSE}
 # simulate longitudinal data
-# createLongData() is a wrapper for simulateLongData()
-p <- list(nsubj = 20, beta0 = 1000, beta1 = 400, max.obs = 10, r.seed = 101,
-          sd.pars = list(sigma = 250), auto.cor = 0.1)
-ResponseData <- createLongData(subject = p)
+# create_long_data() is a wrapper for simulate_long_data()
+p <- list(nsubj = 20, beta0 = 1000, beta1 = 400, max_obs = 10, r_seed = 101,
+          sd_pars = list(sigma = 250), auto_cor = 0.1)
+ResponseData <- create_long_data(subject = p)
 ResponseData
 table(ResponseData$pid)
 ```
@@ -159,7 +165,7 @@ table(ResponseData$pid)
 ResponseData |>
   ggplot(aes(x = time, y = yij, group = pid, colour = pid)) +
   geom_line() +
-  geom_point( size=4, shape=21, fill="white") +
+  geom_point( size=4, shape=21, fill = "white") +
   ylab(y_lab) +
   guides(colour = guide_legend(ncol = 1)) +
   facet_wrap(vars(pid)) +
@@ -180,6 +186,7 @@ ResponseData |>
 
 
 ## Analysis in `R`
+
 The model we wish to fit:
 $$
 \begin{equation}
@@ -205,22 +212,20 @@ close to the original parameters:
 Both the slope and intercepts differ significantly from zero.
 
 
-## `lmeDiagnostic()`
+## `lme_diagnostic()`
+
 This function allows you to interrogate the subject-specific slope and
 intercepts for a given mixed-effects model.
 
 ```{r diagnostic, fig.width = 9, fig.height = 5}
-lmeDiagnostic(fit1)
+lme_diagnostic(fit1)
 ```
-
-
-
 
 ---------------
 
 
-
 # Example 2: Group Dependent Response (Interaction)
+
 In clinical studies, it is often of interest to understand how the treatment
 of one group of subjects differs from another group of subjects (e.g. a
 control group). In a mixed-model setting, this is accomplished by adding an
@@ -232,18 +237,18 @@ samples each, intercepts of $\beta_0=1000$, slopes of $\beta_1=0$ (`crtl`)
 and $\beta_1=500$ (treat), and a serial autocorrelation parameter of 0.1.
 The parameters that differ from the default simulation values can be seen below:
 
-```{r simulate_data2, warning = FALSE}
+```{r simulate-data2, warning = FALSE}
 # simulate longitudinal data with group-specific response
-control <- list(nsubj = 20, beta1 = 0, max.obs = 10, r.seed = 10,
-                sd.pars = list(sigma = 150), auto.cor = 0.1)
-treatment <- list(nsubj = 20, beta1 = 500, max.obs = 10, r.seed = 11,
-                  sd.pars = list(sigma = 350), auto.cor = 0.1)
-GroupResponseData <- createLongData(control, treatment)
+control <- list(nsubj = 20, beta1 = 0, max_obs = 10, r_seed = 10,
+                sd_pars = list(sigma = 150), auto_cor = 0.1)
+treatment <- list(nsubj = 20, beta1 = 500, max_obs = 10, r_seed = 11,
+                  sd_pars = list(sigma = 350), auto_cor = 0.1)
+GroupResponseData <- create_long_data(control, treatment)
 ```
 
 Now plot the longitudinal time traces:
 
-```{r plot_long_combined2, fig.width = 9, fig.height = 5}
+```{r plot-long-combined2, fig.width = 9, fig.height = 5}
 GroupResponseData |>
   ggplot(aes(x = time, y = yij, group = pid, colour = pid)) +
   geom_line() +
@@ -256,6 +261,7 @@ GroupResponseData |>
 
 
 ## Analysis in `R`
+
 The model specification to fit:
 $$
 \begin{equation}
@@ -320,8 +326,9 @@ not vary with time.
 
 # Specific Functions
 ## Mixed-effects Tables
-Fitting mixed-effects models on an `soma_adat` object is achieved via
-the `fitMixedEffectsModels()` function. In this toy example, we will use
+
+Fitting mixed-effects models on an `data.frame` object is achieved via
+the `fit_mixed_effects_models()` function. In this toy example, we will use
 the `lme_data` object that has longitudinal time series data. Typically
 for such analyses, you must identify 4 fields of information:
 
@@ -336,8 +343,8 @@ the intercept to vary by subject with respect to time:
 ```{r fit_mixed}
 options(width = 110)
 models <- lme_data |>
-  fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
-purrr::map(models, summary)
+  fit_mixed_effects_models(fixed = "TimePoint*Response", random = "~ 1 | Pop")
+lapply(models, summary)
 ```
 
 The next step is to convert these models into a univariate table similar to
@@ -345,68 +352,69 @@ the `calc.*` family from `SomaClassify`. This is obviously a toy example with
 only 2 features, but the same syntax is easily scaled to 1000s of features
 
 ```{r}
-createMixedEffectsTable(models)
+create_mixed_effects_tbl(models)
 ```
 
 
+## `simple_lme()`
 
-## `simpleLMEs()`
 Also fits simple linear mixed-effects models wrapping around `fit_lme_safely()`,
-however with some defaults around a _slope_ random effect (`time` is typically
+however with some defaults around a *slope* random effect (`time` is typically
 either a fixed only or both fixed and random effect).
 
 An additional feature is that you may optionally compare two data sets for 
 significant effects by passing a list of data frames as the `data =` argument.
 
 ```{r, fig.width = 8, fig.height = 6}
-data1 <- simulateLongData(r.seed = 101, beta1 = 50)
-model <- simpleLMEs(data1, "yij", "time", "pid")
+data1 <- simulate_long_data(r_seed = 101, beta1 = 50)
+model <- simple_lme(data1, "yij", "time", "pid")
 
-# S3 print method
 model
 
-# S3 plot method
 plot(model)
 
 # plot only certain subject traces
 plot(model, groups = c(1, 3, 5, 10))
 
 # random offset
-model2 <- simpleLMEs(data1, "yij", "time", "pid", random.slope = FALSE)
+model2 <- simple_lme(data1, "yij", "time", "pid", random_slope = FALSE)
 model2
 
 # 2 data set option
-data2 <- simulateLongData(r.seed = 405, beta1 = 10)     # smaller beta1
-model3 <- simpleLMEs(list(A = data1, B = data2), "yij", "time", "pid")
+data2 <- simulate_long_data(r_seed = 405, beta1 = 10)  # smaller beta1
+model3 <- simple_lme(list(A = data1, B = data2), "yij", "time", "pid")
 
-# S3 print method
 model3
 ```
 
-## `simulateLongData()`
-Simulate 1 response variable with some covariance structure within the 
-subjects.
+## `simulate_long_data()`
+
+Simulate 1 response variable with some covariance
+structure within the subjects.
 
 * pid: subject identifier
 * time: time point
 * yij: response for the $j^{th}$ measurement of the $i^{th}$ subject
 
 ```{r simulate}
-simulateLongData()
+simulate_long_data()
 ```
 
 There is also a convenient wrapper to generate simulated longitudinal data
 in a group-wise fashion.
 
-## `createLongData()`
+## `create_long_data()`
+
 ```{r create_sim1}
-control   <- list(nsubj = 20, beta1 = 10, max.obs = 10, r.seed = 10, auto.cor = 0.1)
-treatment <- list(nsubj = 20, beta1 = 500, max.obs = 10, r.seed = 11, auto.cor = 0.1)
-createLongData(control, treatment)
+control   <- list(nsubj = 20, beta1 = 10, max_obs = 10, r_seed = 10, auto_cor = 0.1)
+treatment <- list(nsubj = 20, beta1 = 500, max_obs = 10, r_seed = 11, auto_cor = 0.1)
+create_long_data(control, treatment)
 ```
 
 You may also change the group names by passing labels explicitly:
 
 ```{r create_sim2}
-createLongData(GroupA = control, GroupB = treatment)
+create_long_data(GroupA = control, GroupB = treatment)
 ```
+
+
