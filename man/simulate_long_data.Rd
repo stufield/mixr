@@ -73,16 +73,16 @@ head(long)
 # single group: time response
 p <- list(nsubj = 20, beta0 = 1000, beta1 = 400, max_obs = 10, r_seed = 101,
           sd_pars = list(sigma = 250), auto_cor = 0.1)
-longData <- create_long_data(subject = p)
-head(longData)
-table(longData$pid)
+long_data <- create_long_data(subject = p)
+head(long_data)
+table(long_data$pid)
 
 # simulate longitudinal data with group-specific response
 p1 <- list(nsubj = 20, beta1 = 0, max_obs = 10, r_seed = 10,
            sd_pars = list(sigma = 150), auto_cor = 0.1)
 p2 <- list(nsubj = 20, beta1 = 400, max_obs = 10, r_seed = 101,
            sd_pars = list(sigma = 350), auto_cor = 0.1)
-groupResponseData <- createLongData(p1, p2)
+groupResponseData <- create_long_data(p1, p2)
 head(groupResponseData)
 
 # There are 2 ways to rename the group labels:

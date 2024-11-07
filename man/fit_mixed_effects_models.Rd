@@ -10,8 +10,7 @@
 fit_mixed_effects_models(
   data,
   fixed = "TimePoint*SampleGroup",
-  random = "~ 1 | pid",
-  do.log
+  random = "~ 1 | pid"
 )
 
 create_mixed_effects_tbl(x)
@@ -65,7 +64,7 @@ following components:
 }
 \description{
 Fit an identical series of mixed-effects models according
-for each analyte in an ADAT.
+for each feature in a data set.
 
 The ordering of the table is determined by the fixed effects
 argument passed to \code{\link[=fit_mixed_effects_models]{fit_mixed_effects_models()}}. Generally,
@@ -77,8 +76,8 @@ By default, random intercept models (subject specific offsets)
 are fit with a fixed effect for slope: \code{random = ~ 1 | group}.
 This means that group/subject specific slopes are not fit, and all
 fits will be parallel with respect to slope. This may or may not
-be what you intend but for most of SomaScan data this is the
-desired default.
+be what you intend but for most of proteomic data analysis
+this is a reasonable default.
 }
 \section{Functions}{
 \itemize{
@@ -94,11 +93,13 @@ df <- data.frame(
   seq.6969.4  = stats::rnorm(40, mean = 25, sd = 1.5),
   Response  = factor(sample(c("Control", "Disease"), 40, replace = TRUE))
 )
+
 df$TimePoint <- factor(df$TimePoint, levels = c("baseline", "6 months",
                                                 "12 months", "24 months"))
 
 models <- df[, c("TimePoint", "Response", "Pop", mixr:::get_analytes(df))] |>
   fit_mixed_effects_models(fixed = "TimePoint*Response", random = "~ 1 | Pop")
+
 lapply(models, summary)
 
 class(models)

@@ -117,6 +117,7 @@ simple_lme <- function(data, response, fixed, grouping, random_slope = TRUE, ...
 #' plot(model, groups = seq(1, 11, by = 2), pt.col = "purple")
 #' @importFrom stats predict
 #' @importFrom rlang sym
+#' @importFrom ggplot2 ggplot aes geom_point geom_smooth vars facet_wrap
 #' @export
 plot.simple_LME <- function(x, col = "blue", pt_col = "black",
                             groups = NULL, ...) {
@@ -138,14 +139,14 @@ plot.simple_LME <- function(x, col = "blue", pt_col = "black",
   fixed    <- rlang::sym(x$fixed)
 
   if ( !is.null(groups) ) {
-    data <- dplyr::filter(data, !! rlang::sym(grouping) %in% groups)
+    data <- dplyr::filter(data, !!rlang::sym(grouping) %in% groups)
   }
 
   p <- data |>
-    ggplot2::ggplot(ggplot2::aes(x = !! fixed, y = !! response)) +
-    ggplot2::geom_point(alpha = 0.5, colour = pt_col, size = 3) +
-    ggplot2::geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = col) +
-    ggplot2::facet_wrap(ggplot2::vars(!!grouping))
+    ggplot(aes(x = !! fixed, y = !! response)) +
+    geom_point(alpha = 0.5, colour = pt_col, size = 3) +
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = col) +
+    facet_wrap(vars(!!grouping))
 
   p
 }

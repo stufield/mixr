@@ -16,7 +16,7 @@ included with the model, this must be passed here.}
 split in the subjects (i.e. groups) or a character field string
 indicating the column in \code{data} containing the split information.}
 
-\item{...}{Additional arguments passed to \code{nlme::\link[nlme]{lmList}}.}
+\item{...}{Additional arguments passed to \code{\link[nlme:lmList]{nlme::lmList()}}.}
 }
 \value{
 Diagnostic plots (see description) showing the subject specific
@@ -38,17 +38,17 @@ variable either passed as a vector, or included as part of the data.}
 \examples{
 p1 <- list(beta1 = 50, r_seed = 101)
 p2 <- list(beta1 = 10, r_seed = 405)
-longData  <- createLongData(A = p1, B = p2)
-fit <- fit_lme_safely(yij ~ time, random = ~1|pid, data = longData)
+long_data  <- create_long_data(A = p1, B = p2)
+fit <- fit_lme_safely(yij ~ time, random = ~1|pid, data = long_data)
 lme_diagnostic(fit, longData)  # all groups/pids together
 
 # Group boxplots by sub-group
-lme_diagnostic(fit, longData, group.by = "Group")  # slope A > B
+lme_diagnostic(fit, long_data, group_by = "Group")  # slope A > B
 
 # Group by external random vector (3 levels)
-group_vec <- withr::with_seed(5, sample(1:3, nrow(longData), replace = TRUE))
-lme_diagnostic(fit, longData, group_by = group_vec)
+group_vec <- withr::with_seed(5, sample(1:3, nrow(long_data), replace = TRUE))
+lme_diagnostic(fit, long_data, group_by = group_vec)
 }
 \seealso{
-\code{\link[=lmList]{lmList()}}, \code{\link[=intervals]{intervals()}}, \code{\link[=fit_lme_safely]{fit_lme_safely()}}
+\code{\link[nlme:lmList]{nlme::lmList()}}, \code{\link[nlme:intervals]{nlme::intervals()}}, \code{\link[=fit_lme_safely]{fit_lme_safely()}}
 }

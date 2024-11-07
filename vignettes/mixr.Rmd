@@ -107,19 +107,19 @@ the Wilkinson notation in specifying model formulas.
 
 #### Random Intercept
 
-```{r, eval = FALSE}
+```{r random-intercept, eval = FALSE}
 lme(y ∼ time * group, random = ∼1 | pid, data = adat)
 ```
 
 #### Random Slope
 
-```{r, eval = FALSE}
+```{r random-slope, eval = FALSE}
 lme(y ∼ time * group, random = ∼time | pid, data = adat)
 ```
 
 #### Random Intercept & Random Slope
 
-```{r, eval = FALSE}
+```{r interaction, eval = FALSE}
 lme(y ∼ time * group, random = ∼1 + time | pid, data = adat)
 ```
 
@@ -150,7 +150,7 @@ args(simulate_long_data)
 ```
 
 
-```{r simulate_data1, warning = FALSE}
+```{r simulate-data1, warning = FALSE}
 # simulate longitudinal data
 # create_long_data() is a wrapper for simulate_long_data()
 p <- list(nsubj = 20, beta0 = 1000, beta1 = 400, max_obs = 10, r_seed = 101,
@@ -160,7 +160,7 @@ ResponseData
 table(ResponseData$pid)
 ```
 
-```{r plot_long_pid, fig.width = 9, fig.height = 8}
+```{r plot-long-pid, fig.width = 9, fig.height = 8}
 # plot longitudinal traces by subject ("pid")
 ResponseData |>
   ggplot(aes(x = time, y = yij, group = pid, colour = pid)) +
@@ -172,7 +172,7 @@ ResponseData |>
   ggtitle(bquote(y[ij]~"~"~time))
 ```
 
-```{r plot_long_combined, fig.width = 8, fig.height = 7}
+```{r plot-long-combined, fig.width = 8, fig.height = 7}
 # plot longitudinal traces together
 ResponseData |>
   ggplot(aes(x = time, y = yij, group = pid, colour = pid)) +
@@ -217,7 +217,7 @@ Both the slope and intercepts differ significantly from zero.
 This function allows you to interrogate the subject-specific slope and
 intercepts for a given mixed-effects model.
 
-```{r diagnostic, fig.width = 9, fig.height = 5}
+```{r lme-diagnostic, fig.width = 9, fig.height = 5}
 lme_diagnostic(fit1)
 ```
 
@@ -300,11 +300,11 @@ summary(fit2)
 ```{r coef2, echo = FALSE}
 # Invisible
 tmp <- summary(fit2)$tTable
-b0  <- round(tmp["(Intercept)", "Value"], 2)
-b1  <- round(tmp["time", "Value"], 2)
-b2  <- round(tmp["Grouptreatment", "Value"], 2)
-b3  <- round(tmp["time:Grouptreatment", "Value"], 2)
-t1  <- round(tmp["time:Grouptreatment", "t-value"], 2)
+b0  <- round(tmp["(Intercept)", "Value"], 2L)
+b1  <- round(tmp["time", "Value"], 2L)
+b2  <- round(tmp["Grouptreatment", "Value"], 2L)
+b3  <- round(tmp["time:Grouptreatment", "Value"], 2L)
+t1  <- round(tmp["time:Grouptreatment", "t-value"], 2L)
 ```
 
 From the fixed-effects column in `Value`, the estimates are reasonably close
@@ -340,8 +340,8 @@ for such analyses, you must identify 4 fields of information:
 In the example below, we will fit a model with random offsets, i.e. allowing
 the intercept to vary by subject with respect to time:
 
-```{r fit_mixed}
-options(width = 110)
+```{r fit-mixed-models}
+options(width = 110L)
 models <- lme_data |>
   fit_mixed_effects_models(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 lapply(models, summary)
@@ -351,7 +351,7 @@ The next step is to convert these models into a univariate table similar to
 the `calc.*` family from `SomaClassify`. This is obviously a toy example with
 only 2 features, but the same syntax is easily scaled to 1000s of features
 
-```{r}
+```{r mixed-effects-tbl}
 create_mixed_effects_tbl(models)
 ```
 
@@ -365,7 +365,7 @@ either a fixed only or both fixed and random effect).
 An additional feature is that you may optionally compare two data sets for 
 significant effects by passing a list of data frames as the `data =` argument.
 
-```{r, fig.width = 8, fig.height = 6}
+```{r plot-simple-lme, fig.width = 8, fig.height = 6}
 data1 <- simulate_long_data(r_seed = 101, beta1 = 50)
 model <- simple_lme(data1, "yij", "time", "pid")
 
@@ -396,7 +396,7 @@ structure within the subjects.
 * time: time point
 * yij: response for the $j^{th}$ measurement of the $i^{th}$ subject
 
-```{r simulate}
+```{r simulate-long-data}
 simulate_long_data()
 ```
 
@@ -405,7 +405,7 @@ in a group-wise fashion.
 
 ## `create_long_data()`
 
-```{r create_sim1}
+```{r create-sim1}
 control   <- list(nsubj = 20, beta1 = 10, max_obs = 10, r_seed = 10, auto_cor = 0.1)
 treatment <- list(nsubj = 20, beta1 = 500, max_obs = 10, r_seed = 11, auto_cor = 0.1)
 create_long_data(control, treatment)
@@ -413,7 +413,7 @@ create_long_data(control, treatment)
 
 You may also change the group names by passing labels explicitly:
 
-```{r create_sim2}
+```{r create-sim2}
 create_long_data(GroupA = control, GroupB = treatment)
 ```
 

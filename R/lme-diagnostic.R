@@ -18,28 +18,30 @@
 #' @param group_by Optional. If passed, either a vector indicating the
 #'   split in the subjects (i.e. groups) or a character field string
 #'   indicating the column in `data` containing the split information.
-#' @param ... Additional arguments passed to \code{nlme::\link[nlme]{lmList}}.
+#' @param ... Additional arguments passed to [nlme::lmList()].
 #'
 #' @return Diagnostic plots (see description) showing the subject specific
 #'   linear model coefficients (slope and intercept).
-#' @seealso [lmList()], [intervals()], [fit_lme_safely()]
+#' @seealso [nlme::lmList()], [nlme::intervals()], [fit_lme_safely()]
 #'
 #' @examples
 #' p1 <- list(beta1 = 50, r_seed = 101)
 #' p2 <- list(beta1 = 10, r_seed = 405)
-#' longData  <- createLongData(A = p1, B = p2)
-#' fit <- fit_lme_safely(yij ~ time, random = ~1|pid, data = longData)
+#' long_data  <- create_long_data(A = p1, B = p2)
+#' fit <- fit_lme_safely(yij ~ time, random = ~1|pid, data = long_data)
 #' lme_diagnostic(fit, longData)  # all groups/pids together
 #'
 #' # Group boxplots by sub-group
-#' lme_diagnostic(fit, longData, group.by = "Group")  # slope A > B
+#' lme_diagnostic(fit, long_data, group_by = "Group")  # slope A > B
 #'
 #' # Group by external random vector (3 levels)
-#' group_vec <- withr::with_seed(5, sample(1:3, nrow(longData), replace = TRUE))
-#' lme_diagnostic(fit, longData, group_by = group_vec)
+#' group_vec <- withr::with_seed(5, sample(1:3, nrow(long_data), replace = TRUE))
+#' lme_diagnostic(fit, long_data, group_by = group_vec)
 #' @importFrom nlme intervals lmList
 #' @importFrom stats coefficients as.formula
 #' @importFrom tidyr drop_na pivot_longer
+#' @importFrom ggplot2 ggplot aes coord_flip geom_point geom_boxplot
+#' @importFrom ggplot2 position_jitterdodge labs
 #' @export
 lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
@@ -56,7 +58,7 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
     data <- model$data
   }
 
-  lm_fits <- nlme::lmList(form, data = data, ...)
+  lm_fits <- lmList(form, data = data, ...)
   lm_intr <- nlme::intervals(lm_fits)
   p1 <- plot(lm_intr, main = sprintf("Subject Specific Coefficients | %s", fixed))
 
@@ -66,7 +68,7 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
     } else if ( length(group_by) == nrow(data) ) {
       data <- split(data, group_by)
     }
-    lm_fits <- lapply(data, function(.x) nlme::lmList(form, data = .x, ...))
+    lm_fits <- lapply(data, function(.x) lmList(form, data = .x, ...))
   } else {
     lm_fits <- list(lm_fits)
   }
@@ -78,15 +80,14 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
     pivot_longer(c(time, Intercept), names_to = "coef")
 
   p2 <- id_data |>
-    ggplot2::ggplot(ggplot2::aes(x = coef, y = value, fill = Group)) +
-    ggplot2::geom_boxplot(alpha = 0.7, outlier.size = 0, notch = TRUE) +
+    ggplot(aes(x = coef, y = value, fill = Group)) +
+    geom_boxplot(alpha = 0.7, outlier.size = 0, notch = TRUE) +
     SomaPlotr::scale_fill_soma() +
-    ggplot2::geom_point(pch = 21, alpha = 0.5, size = 2.5,
-                        position = ggplot2::position_jitterdodge(jitter.width = 0.05,
-                                                                 seed = 1)) +
-    ggplot2::labs(x = "", y = "") +
-    ggplot2::coord_flip() +
-    SomaPlotr::theme_soma()
+    geom_point(pch = 21, alpha = 0.5, size = 2.5,
+                        position = position_jitterdodge(jitter.width = 0.05,
+                                                        seed = 1)) +
+    labs(x = "", y = "") +
+    coord_flip()
 
-  gridExtra::grid.arrange(p1, p2, ncol = 2L)
+  withr::with_namespace("patchwork", p1 + p2)
 }

@@ -1,14 +1,14 @@
 #' Fit Mixed-Effects Models
 #'
 #' Fit an identical series of mixed-effects models according
-#'   for each analyte in an ADAT.
+#'   for each feature in a data set.
 #'
 #' By default, random intercept models (subject specific offsets)
 #'   are fit with a fixed effect for slope: `random = ~ 1 | group`.
 #'   This means that group/subject specific slopes are not fit, and all
 #'   fits will be parallel with respect to slope. This may or may not
-#'   be what you intend but for most of SomaScan data this is the
-#'   desired default.
+#'   be what you intend but for most of proteomic data analysis
+#'   this is a reasonable default.
 #'
 #' @order 1
 #' @param data The `data.frame` containing data as columns.
@@ -30,24 +30,26 @@
 #'   seq.6969.4  = stats::rnorm(40, mean = 25, sd = 1.5),
 #'   Response  = factor(sample(c("Control", "Disease"), 40, replace = TRUE))
 #' )
+#'
 #' df$TimePoint <- factor(df$TimePoint, levels = c("baseline", "6 months",
 #'                                                 "12 months", "24 months"))
 #'
 #' models <- df[, c("TimePoint", "Response", "Pop", mixr:::get_analytes(df))] |>
 #'   fit_mixed_effects_models(fixed = "TimePoint*Response", random = "~ 1 | Pop")
+#'
 #' lapply(models, summary)
 #'
-#' @importFrom stats as.formula setNames
+#' @importFrom stats as.formula
 #' @export
 fit_mixed_effects_models <- function(data, fixed = "TimePoint*SampleGroup",
-                                     random = "~ 1 | pid", do.log) {
+                                     random = "~ 1 | pid") {
 
   fixed <- gsub("[[:space:]]", "", trimws(fixed))  # rm whitespace
 
-  out <- setNames(get_analytes(data), get_analytes(data)) |>
-    lapply(function(.apt) {
-      signal_done("Fitting ...", value(.apt))
-      frm <- as.formula(sprintf("%s ~ %s", .apt, fixed))
+  out <- set_Names(get_analytes(data)) |>
+    lapply(function(.feat) {
+      signal_done("Fitting ...", value(.feat))
+      frm <- create_form(.feat, fixed)
       fit_lme_safely(formula = frm, random  = as.formula(random), data = data)
     })
   structure(out,

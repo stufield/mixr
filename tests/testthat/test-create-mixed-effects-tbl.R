@@ -1,6 +1,6 @@
 
 # Setup ----
-withr::local_options(list(soma.praise = FALSE, signal.quiet = TRUE))
+withr::local_options(list(signal.quiet = TRUE))
 lme_tab <- fit_mixed_effects_models(lme_data,
                                     fixed = "TimePoint*Response",
                                     random = "~ 1 | Pop") |>
