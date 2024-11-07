@@ -1,21 +1,21 @@
 #' Generates a table of mixed effects
 #'   models from a list of models generated
-#'   by a call to [fitMixedEffectsModels()].
+#'   by a call to [fit_mixed_effects_models()].
 #'
 #' The ordering of the table is determined by the fixed effects
-#'   argument passed to [fitMixedEffectsModels()]. Generally,
+#'   argument passed to [fit_mixed_effects_models()]. Generally,
 #'   if there is an interaction term, that p-value is used, otherwise
 #'   the other fixed effects, usually `TimePoint`.
 #'
 #' @order 2
-#' @rdname fitMixedEffectsModels
+#' @rdname fit_mixed_effects_models
 #' @param x A list of mixed-effects models calculated
-#'   using [fitMixedEffectsModels()]. Alternatively, an object of
+#'   using [fit_mixed_effects_models()]. Alternatively, an object of
 #'   class `"mixed_effects_table"` for the S3 print method.
 #'
 #' @return A list object of class `mixed_effects_table` with the
 #' following components:
-#' \item{stat.table}{A data frame (table) of the results:
+#' \item{stat_table}{A data frame (table) of the results:
 #' \describe{
 #'   \item{Time effect:}{Both F-values and p-values for TimePoint}
 #'   \item{Group effect:}{Both F-values and p-values for Group}
@@ -25,7 +25,7 @@
 #'   \item{rank:}{Ranking by the test significance.}
 #' }}
 #' \item{test}{The name of the model fit, "Linear Mixed-effects Model".}
-#' \item{call}{The direct call made the [fitMixedEffectsModels()].}
+#' \item{call}{The direct call made the [fit_mixed_effects_models()].}
 #' \item{data_dim}{The dimensions of the data frame.}
 #' \item{method}{The fitting method used by `lme`.}
 #' \item{fixed}{The fixed-effects.}
@@ -38,24 +38,24 @@
 #' @examples
 #' class(models)
 #'
-#' lme_tab <- createMixedEffectsTable(models)
+#' lme_tab <- create_mixed_effects_tbl(models)
 #' @importFrom tibble as_tibble deframe
 #' @importFrom tidyr pivot_longer unite
 #' @importFrom stats p.adjust anova runif setNames
 #' @importFrom dplyr sym mutate arrange row_number select everything
 #' @importFrom dplyr ends_with starts_with filter row_number bind_rows
 #' @export
-createMixedEffectsTable <- function(x) {
+create_mixed_effects_tbl <- function(x) {
 
   stopifnot(
-    inherits(x, "soma_lme"), # our own object `fitMixedEffectsModels()`
+    inherits(x, "mixr_lme"), # our own object `fit_mixed_effects_models()`
     !is.null(names(x))       # must be a named list
   )
 
   if ( !"fixed" %in% names(attributes(x)) ) {
     stop(
       "Fixed effects string missing. ",
-      "Was the model list created using `fitMixedEffectsModels()`?",
+      "Was the model list created using `fit_mixed_effects_models()`?",
       call. = FALSE
     )
   }
@@ -90,7 +90,7 @@ createMixedEffectsTable <- function(x) {
     dplyr::mutate(rank = dplyr::row_number()) |>
     col2rn("Feature")
 
-  ret_list <- list()
+  ret_list              <- list()
   ret_list$stat_table   <- stab
   ret_list$test         <- "Linear Mixed-effects Model"
   ret_list$call         <- x[[1L]]$call
@@ -99,7 +99,7 @@ createMixedEffectsTable <- function(x) {
   ret_list$random       <- attributes(x)$random
   ret_list$log          <- attributes(x)$log
   ret_list$nModels      <- length(x)
-  ret_list$data.dim     <- attributes(x)$data.dim
+  ret_list$data_dim     <- attributes(x)$data.dim
   dims                  <- x[[1L]]$dims
   ret_list$observations <- dims$N
   pids                  <- dims$ngrps[dims$Q[1L]]
@@ -111,7 +111,7 @@ createMixedEffectsTable <- function(x) {
 }
 
 #' @order 3
-#' @describeIn fitMixedEffectsModels
+#' @describeIn fit_mixed_effects_models
 #'   S3 print method for `mixed_effects_table` class.
 #'
 #' @param n `integer(1)`The number of rows to
@@ -124,7 +124,7 @@ createMixedEffectsTable <- function(x) {
 #' lme_tab
 #'
 #' @export
-print.mixed_effects_table <- function(x, n = 6, ...) {
+print.mixed_effects_table <- function(x, n = 6L, ...) {
   left <- c("Fixed effects",
             "Random effects",
             "Number of models",

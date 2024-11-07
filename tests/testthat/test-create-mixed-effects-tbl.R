@@ -1,17 +1,17 @@
 
 # Setup ----
 withr::local_options(list(soma.praise = FALSE, signal.quiet = TRUE))
-lme_tab <- fitMixedEffectsModels(lme_data,
-                                 fixed = "TimePoint*Response",
-                                 random = "~ 1 | Pop") |>
-  createMixedEffectsTable()
+lme_tab <- fit_mixed_effects_models(lme_data,
+                                    fixed = "TimePoint*Response",
+                                    random = "~ 1 | Pop") |>
+  create_mixed_effects_tbl()
 
 # Testing ----
-test_that("`fitMixedEffectsModels()` function creates correct values", {
+test_that("`fit_mixed_effects_models()` function creates correct values", {
   expect_s3_class(lme_tab, "stat_table")
   expect_s3_class(lme_tab, "mixed_effects_table")
-  expect_named(lme_tab, c("stat.table", "test", "call", "method", "fixed",
-                          "random", "log", "nModels", "data.dim",
+  expect_named(lme_tab, c("stat_table", "test", "call", "method", "fixed",
+                          "random", "log", "nModels", "data_dim",
                           "observations", "PIDfield", "subjects"))
   true <- data.frame(
     Response_F.value           = c(2.47804648450652, 1.62977099950533), # nolint
@@ -22,7 +22,7 @@ test_that("`fitMixedEffectsModels()` function creates correct values", {
     TimePoint.Response_p.value = c(0.223382264537352, 0.810932660428589),
     converged                  = c(TRUE, TRUE),
     fdr                        = c(0.446764529074703, 0.810932660428589),
-    p.bonferroni               = c(0.446764529074703, 1),
+    p_bonferroni               = c(0.446764529074703, 1),
     rank                       = c(1L, 2L),
     row.names                  = c("seq.1234.56", "seq.6969.4")
   )
@@ -34,7 +34,7 @@ test_that("`fitMixedEffectsModels()` function creates correct values", {
   expect_equal(lme_tab$random, "~ 1 | Pop")
   expect_false(lme_tab$log)
   expect_equal(lme_tab$nModels, 2)
-  expect_equal(lme_tab$data.dim, c(40, 5))
+  expect_equal(lme_tab$data_dim, c(40L, 5L))
   expect_equal(lme_tab$observations, 40)
   expect_equal(lme_tab$PIDfield, "Pop")
   expect_equal(lme_tab$subjects, 10)

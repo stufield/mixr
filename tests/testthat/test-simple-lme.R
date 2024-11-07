@@ -1,5 +1,5 @@
 
-# Note: actual fitted values are tested in `test-simulateLongData.R`
+# Note: actual fitted values are tested in `test-simulate-long-data.R`
 # Here the print methods serve as rough proxy testing of output values
 
 # Reduce digits for S3 print methods
@@ -7,12 +7,12 @@
 withr::local_options(c(digits = 5, cli.num_colors = 1L))
 
 # Setup ----
-long  <- simulateLongData(r.seed = 1, beta1 = 50)
+long  <- simulate_long_data(r_seed = 1, beta1 = 50)
 
 # Testing ----
-test_that("simpleLME returns correct model fixed slope", {
-  model <- simpleLMEs(long, "yij", "time", "pid")
-  expect_s3_class(model, "simpleLMEs")
+test_that("`simpleLME()` returns correct model fixed slope", {
+  model <- simple_lme(long, "yij", "time", "pid")
+  expect_s3_class(model, "simple_LME")
   expect_equal(model$data, long)
   expect_false(model$compare_data)
   expect_equal(model$response, "yij")
@@ -23,9 +23,9 @@ test_that("simpleLME returns correct model fixed slope", {
   expect_snapshot_output(model)
 })
 
-test_that("simpleLME returns correct model random slope", {
-  model <- simpleLMEs(long, "yij", "time", "pid", random.slope = FALSE)
-  expect_s3_class(model, "simpleLMEs")
+test_that("`simpleLME()` returns correct model random slope", {
+  model <- simple_lme(long, "yij", "time", "pid", random_slope = FALSE)
+  expect_s3_class(model, "simple_LME")
   expect_equal(model$data, long)
   expect_false(model$compare_data)
   expect_equal(model$response, "yij")
@@ -37,10 +37,10 @@ test_that("simpleLME returns correct model random slope", {
 })
 
 # Compare 2 data sets -------
-test_that("simpleLME returns model when comparing 2 data sets", {
-  long2 <- simulateLongData(r.seed = 405, beta1 = 10)     # smaller beta1
-  model <- simpleLMEs(list(A = long, B = long2), "yij", "time", "pid")
-  expect_s3_class(model, "simpleLMEs")
+test_that("`simplelme()` returns model when comparing 2 data sets", {
+  long2 <- simulate_long_data(r_seed = 405, beta1 = 10)     # smaller beta1
+  model <- simple_lme(list(A = long, B = long2), "yij", "time", "pid")
+  expect_s3_class(model, "simple_LME")
   expect_equal(model$data, list(A = long, B = long2))
   expect_true(model$compare_data)
   expect_equal(model$response, "yij")
@@ -51,10 +51,10 @@ test_that("simpleLME returns model when comparing 2 data sets", {
   expect_snapshot_output(model)
 })
 
-test_that("simpleLME trips error when data list is not named", {
-  long2 <- simulateLongData(r.seed = 405, beta1 = 10)     # smaller beta1
+test_that("`simple_lme()` trips error when data list is not named", {
+  long2 <- simulate_long_data(r_seed = 405, beta1 = 10)     # smaller beta1
   expect_error(
-    simpleLMEs(list(long, long2), "yij", "time", "pid"),
+    simple_lme(list(long, long2), "yij", "time", "pid"),
     "If `data =` argument is a list of data frames, it *must* be named.",
     fixed = TRUE
   )

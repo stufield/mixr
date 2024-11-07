@@ -1,3 +1,4 @@
+
 skip("fix when libml conflict is resolved; see /inst")
 
 # Setup ----
@@ -13,8 +14,8 @@ myrandomform <- list(SiteId = ~ 1)
 
 # Testing ----
 # Test classification ----
-test_that("`fitGlmmLasso()` for classifcation returns the correct values", {
-  fitclass <- crossValidateGlmmLasso(
+test_that("`fit_glmm_lasso()` for classifcation returns the correct values", {
+  fitclass <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myclassform,
     random             = myrandomform,
@@ -22,9 +23,9 @@ test_that("`fitGlmmLasso()` for classifcation returns the correct values", {
     folds              = 2,
     .repeats           = 2,
     .lambda            = c(1, 10),
-    r.seed             = 10
+    r_seed             = 10
     ) |>
-    fitGlmmLasso(data = log_data, metric = "auc", lambda = 1)
+    fit_glmm_lasso(data = log_data, metric = "auc", lambda = 1)
 
   expect_s3_class(fitclass, "glmmLasso")
   expect_type(fitclass$fitted.values, "double")
@@ -55,8 +56,8 @@ test_that("`fitGlmmLasso()` for classifcation returns the correct values", {
 })
 
 # Test regression ----
-test_that("`fitGlmmLasso()` for regression returns the correct values", {
-  fitreg <- crossValidateGlmmLasso(
+test_that("`fit_glmm_lasso()` for regression returns the correct values", {
+  fitreg <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myregform,
     random             = myrandomform,
@@ -64,9 +65,9 @@ test_that("`fitGlmmLasso()` for regression returns the correct values", {
     folds              = 2,
     .repeats           = 2,
     .lambda            = c(1, 10),
-    r.seed             = 10
+    r_seed             = 10
     ) |>
-    fitGlmmLasso(data = log_data, metric = "rsqTrad", lambda = 1)
+    fit_glmm_lasso(data = log_data, metric = "rsqTrad", lambda = 1)
 
   expect_s3_class(fitreg, "glmmLasso")
   expect_type(fitreg$fitted.values, "double")

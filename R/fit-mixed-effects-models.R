@@ -1,24 +1,23 @@
 #' Fit Mixed-Effects Models
 #'
 #' Fit an identical series of mixed-effects models according
-#' for each analyte in an ADAT.
+#'   for each analyte in an ADAT.
 #'
 #' By default, random intercept models (subject specific offsets)
-#' are fit with a fixed effect for slope: `random = ~ 1 | group`.
-#' This means that group/subject specific slopes are not fit, and all
-#' fits will be parallel with respect to slope. This may or may not
-#' be what you intend but for most of SomaScan data this is the
-#' desired default.
+#'   are fit with a fixed effect for slope: `random = ~ 1 | group`.
+#'   This means that group/subject specific slopes are not fit, and all
+#'   fits will be parallel with respect to slope. This may or may not
+#'   be what you intend but for most of SomaScan data this is the
+#'   desired default.
 #'
 #' @order 1
-#' @param data The `data.frame` containing RFU data to as columns.
-#' @param fixed Character. Indicating the right-hand-side of the
+#' @param data The `data.frame` containing data as columns.
+#' @param fixed `character(1)`. Indicating the right-hand-side of the
 #'   formula for the fixed effect.
-#' @param random Character. Indicating the full formula for the random
+#' @param random `character(1)`. Indicating the full formula for the random
 #'   effect. The default fits subject specific intercepts. Typically "group"
 #'   field indicator (e.g. subjects) are to the right side of the "|" and this
 #'   field *must* be a column name in `data`.
-#' @param do.log Deprecated. Please log-transform prior to fitting.
 #' @return A list (invisibly) of fitted linear mixed-effects response models
 #'   (`class = lme`) with extra attributes attached for print methods.
 #' @seealso [fit_lme_safely()]
@@ -35,18 +34,13 @@
 #'                                                 "12 months", "24 months"))
 #'
 #' models <- df[, c("TimePoint", "Response", "Pop", mixr:::get_analytes(df))] |>
-#'   fitMixedEffectsModels(fixed = "TimePoint*Response", random = "~ 1 | Pop")
+#'   fit_mixed_effects_models(fixed = "TimePoint*Response", random = "~ 1 | Pop")
 #' lapply(models, summary)
 #'
 #' @importFrom stats as.formula setNames
 #' @export
-fitMixedEffectsModels <- function(data, fixed = "TimePoint*SampleGroup",
-                                  random = "~ 1 | pid", do.log) {
-
-  if ( !missing(do.log) ) {
-    stop("`do.log` is deprecated. Log-transform upstream if desired.",
-         call. = FALSE)
-  }
+fit_mixed_effects_models <- function(data, fixed = "TimePoint*SampleGroup",
+                                     random = "~ 1 | pid", do.log) {
 
   fixed <- gsub("[[:space:]]", "", trimws(fixed))  # rm whitespace
 
@@ -57,7 +51,7 @@ fitMixedEffectsModels <- function(data, fixed = "TimePoint*SampleGroup",
       fit_lme_safely(formula = frm, random  = as.formula(random), data = data)
     })
   structure(out,
-            class    = c("soma_lme", "list"),
+            class    = c("mixr_lme", "list"),
             fixed    = fixed,
             random   = random,
             PIDfield = gsub("^~.*\\| *", "", random),

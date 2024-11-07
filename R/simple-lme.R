@@ -32,23 +32,23 @@
 #' @seealso [fit_lme_safely()]
 #'
 #' @examples
-#' long  <- simulateLongData(r.seed = 101, beta1 = 50)
-#' model <- simpleLMEs(long, "yij", "time", "pid")
+#' long  <- simulate_long_data(r_seed = 101, beta1 = 50)
+#' model <- simple_lme(long, "yij", "time", "pid")
 #' model   # S3 print method
 #'
 #' # random offset
-#' model2 <- simpleLMEs(long, "yij", "time", "pid", random_slope = FALSE)
+#' model2 <- simple_lme(long, "yij", "time", "pid", random_slope = FALSE)
 #'
 #' # 2 data set option
-#' long2  <- simulateLongData(r.seed = 405, beta1 = 10)     # smaller beta1
-#' model3 <- simpleLMEs(list(A = long, B = long2), "yij", "time", "pid")
+#' long2  <- simulate_long_data(r_seed = 405, beta1 = 10)     # smaller beta1
+#' model3 <- simple_lme(list(A = long, B = long2), "yij", "time", "pid")
 #'
 #' # S3 print method
 #' model3
 #'
 #' @importFrom stats setNames
 #' @export
-simpleLMEs <- function(data, response, fixed, grouping, random_slope = TRUE, ...) {
+simple_lme <- function(data, response, fixed, grouping, random_slope = TRUE, ...) {
 
   stopifnot(inherits(data, c("data.frame", "list")))
 
@@ -62,7 +62,7 @@ simpleLMEs <- function(data, response, fixed, grouping, random_slope = TRUE, ...
   compare_data <- (inherits(data, "list") && length(data) == 2L)
   fixed_form   <- as.formula(sprintf("%s ~ %s", response, fixed))
   random_form  <- as.formula(sprintf("~ %s | %s",
-                                     ifelse(random.slope, fixed, 1),
+                                     ifelse(random_slope, fixed, 1),
                                      grouping))
 
   if ( compare_data ) {
@@ -89,22 +89,26 @@ simpleLMEs <- function(data, response, fixed, grouping, random_slope = TRUE, ...
   ret$fixed        <- fixed
   ret$random       <- random_form
   ret$grouping     <- grouping
-  add_class(ret, "simpleLMEs")
+  add_class(ret, "simple_LME")
 }
 
 
 # nocov start
 
-# Plots a Random Effect from a simpleLME
-#' @describeIn simpleLMEs
-#' The S3 method plots the points and fit for each of the
-#' random effects in a [simpleLMEs()] model object.
-#' @param x An object of class [simpleLMEs()].
+# Plots a Random Effect from a simple_lme
+
+#' @describeIn simple_lme
+#'   S3 method plots the points and fit for each of the
+#'   random effects in a [simple_lme()] model object.
+#'
+#' @param x An `simple_LME` class object.
 #' @param col The color of the lines. See [ggplot2::geom_smooth()].
-#' @param pt.col The color of the points. See [ggplot2::geom_point()].
-#' @param groups Numeric. Indices indicating the *optional* subset of
-#' groups (e.g. subjects) to be plotted for the random effects.
+#' @param pt_col The color of the points. See [ggplot2::geom_point()].
+#' @param groups `numeric(n)`. Indices indicating the *optional* subset of
+#'   groups (e.g. subjects) to be plotted for the random effects.
+#'
 #' @author Michael R. Mehan, Stu Field
+#'
 #' @examples
 #' # S3 plot method
 #' plot(model)
@@ -114,7 +118,7 @@ simpleLMEs <- function(data, response, fixed, grouping, random_slope = TRUE, ...
 #' @importFrom stats predict
 #' @importFrom rlang sym
 #' @export
-plot.simpleLMEs <- function(x, col = "blue", pt.col = "black",
+plot.simple_LME <- function(x, col = "blue", pt_col = "black",
                             groups = NULL, ...) {
 
   if ( x$compare_data ) {
@@ -139,7 +143,7 @@ plot.simpleLMEs <- function(x, col = "blue", pt.col = "black",
 
   p <- data |>
     ggplot2::ggplot(ggplot2::aes(x = !! fixed, y = !! response)) +
-    ggplot2::geom_point(alpha = 0.5, colour = pt.col, size = 3) +
+    ggplot2::geom_point(alpha = 0.5, colour = pt_col, size = 3) +
     ggplot2::geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = col) +
     ggplot2::facet_wrap(ggplot2::vars(!!grouping))
 
@@ -147,11 +151,11 @@ plot.simpleLMEs <- function(x, col = "blue", pt.col = "black",
 }
 
 
-# Print method for simpleLME
-#' @describeIn simpleLMEs
-#' The S3 method print method for `simpleLMEs` model object.
+#' @describeIn simple_lme
+#'   S3 method print method for `simple_LME` model object.
+#'
 #' @export
-print.simpleLMEs <- function(x, ...) {
+print.simple_LME <- function(x, ...) {
 
   getN <- function(x) {
     dd <- x$dims

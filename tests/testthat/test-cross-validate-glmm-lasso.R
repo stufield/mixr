@@ -1,3 +1,4 @@
+
 skip("fix when libml conflict is resolved; see /inst")
 
 # Setup ----
@@ -15,15 +16,15 @@ myrandomform <- list(SiteId = ~ 1)
 # Test random seed ----
 test_that("the 'random.seed' error catch is functioning", {
   expect_error(
-    crossValidateGlmmLasso(myformula, random.seed = 101),
-    paste("Please pass 'r.seed' argument as an integer.",
+    cross_validate_glmm_lasso(myformula, random.seed = 101),
+    paste("Please pass 'r_seed' argument as an integer.",
           "You have passed 'random.seed' with value 101."), fixed = TRUE
   )
 })
 
 # Test classification ----
-test_that("`crossValidateGlmmLasso()` for classifcation returns as expected", {
-  cvclass <- crossValidateGlmmLasso(
+test_that("`cross_validate_glmm_lasso()` for classifcation returns as expected", {
+  cvclass <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myclassform,
     random             = myrandomform,
@@ -32,7 +33,7 @@ test_that("`crossValidateGlmmLasso()` for classifcation returns as expected", {
     folds              = 2,
     .repeats           = 2,
     .lambda            = c(1, 10),
-    r.seed             = 10,
+    r_seed             = 10,
     save.fits          = FALSE,
     save.splits        = FALSE
   )
@@ -113,19 +114,19 @@ test_that("`crossValidateGlmmLasso()` for classifcation returns as expected", {
 })
 
 # Test regression ----
-test_that("`crossValidateGlmmLasso()` for regression returns as expected", {
-  cvreg <- crossValidateGlmmLasso(
+test_that("`cross_validate_glmm_lasso()` for regression returns as expected", {
+  cvreg <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myregform,
     random             = myrandomform,
     family             = stats::gaussian(link = "identity"),
-    decision.threshold = 0.5,
+    decision_threshold = 0.5,
     folds              = 2,
     .repeats           = 2,
     .lambda            = c(1, 10),
-    r.seed             = 10,
-    save.fits          = FALSE,
-    save.splits        = FALSE
+    r_seed             = 10,
+    save_fits          = FALSE,
+    save_splits        = FALSE
   )
 
   expect_s3_class(cvreg, "cvGlmmLasso")
@@ -203,18 +204,18 @@ test_that("`crossValidateGlmmLasso()` for regression returns as expected", {
 })
 
 # Test down-sampling ----
-test_that("`crossValidateGlmmLasso()` classifcation down-sampling returns as expected", {
-  cvclass_down <- crossValidateGlmmLasso(
+test_that("`cross_validate_glmm_lasso()` classifcation down-sampling returns as expected", {
+  cvclass_down <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myclassform,
     random             = myrandomform,
     family             = stats::binomial(link = "logit"),
-    decision.threshold = 0.5,
+    decision_threshold = 0.5,
     subsample          = "down",
     folds              = 2,
     .repeats           = 2,
     .lambda            = c(1, 10),
-    r.seed             = 10
+    r_seed             = 10
     )
 
   expect_s3_class(cvclass_down, "cvGlmmLasso")
@@ -292,18 +293,18 @@ test_that("`crossValidateGlmmLasso()` classifcation down-sampling returns as exp
 })
 
 # Test up-sampling ----
-test_that("`crossValidateGlmmLasso()` classifcation up-sampling returns as expected", {
-  cvclass_up <- crossValidateGlmmLasso(
+test_that("`cross_validate_glmm_lasso()` classifcation up-sampling returns as expected", {
+  cvclass_up <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myclassform,
     random             = myrandomform,
     family             = stats::binomial(link = "logit"),
-    decision.threshold = 0.5,
+    decision_threshold = 0.5,
     subsample          = "up",
     folds              = 2,
     .repeats           = 2,
     .lambda            = c(1, 10),
-    r.seed             = 10
+    r_seed             = 10
   )
 
   expect_s3_class(cvclass_up, "cvGlmmLasso")
@@ -382,9 +383,9 @@ test_that("`crossValidateGlmmLasso()` classifcation up-sampling returns as expec
 })
 
 # Test errors ----
-test_that("`crossValidateGlmmLasso()` throws error when wrong parameters passed", {
+test_that("`cross_validate_glmm_lasso()` throws error when wrong parameters passed", {
   expect_error(
-    crossValidateGlmmLasso(
+    cross_validate_glmm_lasso(
       data               = log_data,
       fixed              = myregform,
       random             = myrandomform,
@@ -393,7 +394,7 @@ test_that("`crossValidateGlmmLasso()` throws error when wrong parameters passed"
     "The elastic net values for lambda must be >= 0"
   )
   expect_error(
-    crossValidateGlmmLasso(
+    cross_validate_glmm_lasso(
       fixed              = myregform,
       random             = myrandomform,
       family             = stats::gaussian(link = "identity"),

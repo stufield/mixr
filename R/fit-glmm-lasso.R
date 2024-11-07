@@ -1,29 +1,34 @@
-#' Fit a `glmmLasso` object from a `cvGlmmLasso` object
+#' Fit a `glmmLasso` object from a `cv_glmm_lasso` object
 #'
-#' From a `cvGlmmLasso` object, find the best parameters from the cross-
-#' validation and re-fit via [glmmLasso::glmmLasso()]. See `[crossValidateGlmmLasso()]`.
+#' From a `cv_glmm_lasso` object, find the best parameters from the cross-
+#'   validation and re-fit via [glmmLasso::glmmLasso()].
+#'   See `[cross_validate_glmm_lasso()]`.
 #'
 #' @family GLMMlasso
-#' @param object A `cvGlmmLasso` class object to use to fit a `glmmLasso` object.
-#' @param data Data to fit model with. Typically a `soma_adat` class object.
-#' @param metric Which performance metric to use to choose lambda for lasso models.
+#'
+#' @param object A `cv_glmm_lasso` class object to use to fit
+#'   a `glmm_lasso` object.
+#' @param data Data to fit model with. Typically a `data.frame` object.
+#' @param metric Which performance metric to use to choose
+#'   lambda for lasso models.
 #' @param ... Additional parameters passed to [glmmLasso::glmmLasso()]
-#' model fitting function.
-#' @param verbose Logical. Toggle verbosity.
-#' @return A `glmmLasso` class object.
+#'   model fitting function.
+#' @param verbose `logical(1)`. Toggle verbosity.
+#'
+#' @return A `glmmLasso` class object. See [glmmLasso::glmmLasso()].
+#'
 #' @importFrom dplyr filter select sample_n
 #' @importFrom rlang exec
 #' @export
-fitGlmmLasso <- function(object, data,
-                         metric = c("auc", "sensitivity",
-                                    "specificity", "rsqTrad",
-                                    "rsqAdj", "rsqPred"),
-                         verbose = interactive(), ...) {
+fit_glmm_lasso <- function(object, data,
+                           metric = c("auc", "sensitivity", "specificity",
+                                      "rsqTrad", "rsqAdj", "rsqPred"),
+                           verbose = interactive(), ...) {
 
-  # check is.cvGlmmLasso class
-  if ( !is.cvGlmmLasso(object) ) {
+  # check is_cv_glmm_lasso class
+  if ( !is_cv_glmm_lasso(object) ) {
     stop(
-      "Your object is not the output of `crossValidateGlmmLasso()`. ",
+      "Your object is not the output of `cross_validate_glmm_lasso()`. ",
       "Please check your input!", call. = FALSE
     )
   }

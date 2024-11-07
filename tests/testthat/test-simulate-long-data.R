@@ -1,6 +1,6 @@
 
 # Setup ----
-long <- simulateLongData(r.seed = 1)
+long <- simulate_long_data(r_seed = 1L)
 
 
 # Testing Single Group simulation -----
@@ -16,7 +16,7 @@ test_that("the defaults generate the expected simulated data", {
 })
 
 test_that("the n subjects generate the expected dimensions", {
-  long2 <- simulateLongData(nsubj = 45, r.seed = 2)
+  long2 <- simulate_long_data(nsubj = 45, r_seed = 2)
   expect_s3_class(long2, "tbl_df")
   expect_equal(dim(long2), c(313, 4))
   expect_equal(colSums(long2),
@@ -27,7 +27,7 @@ test_that("the n subjects generate the expected dimensions", {
 })
 
 test_that("the `group =` argument adds the proper variable", {
-  sim <- simulateLongData(r.seed = 1, group = "A")
+  sim <- simulate_long_data(r_seed = 1, group = "A")
   expect_named(sim, c("pid", "time", "eij", "yij", "Group"))
   expect_equal(dplyr::select(long, -pid),          # minus grouping column
                dplyr::select(sim, -Group, -pid))   # should be identical
@@ -35,15 +35,15 @@ test_that("the `group =` argument adds the proper variable", {
 
 # Two group simulation ----
 test_that("simulating 2 groups generates expected data", {
-  p1 <- list(nsubj = 20, beta1 = 0, max.obs = 10, r.seed = 10,
-             sd.pars = list(sigma = 150), auto.cor = 0.1)
-  p2 <- list(nsubj = 20, beta1 = 400, max.obs = 10, r.seed = 101,
-             sd.pars = list(sigma = 350), auto.cor = 0.1)
+  p1 <- list(nsubj = 20, beta1 = 0, max_obs = 10, r_seed = 10,
+             sd_pars = list(sigma = 150), auto_cor = 0.1)
+  p2 <- list(nsubj = 20, beta1 = 400, max_obs = 10, r_seed = 101,
+             sd_pars = list(sigma = 350), auto_cor = 0.1)
 
   # Warning is thrown 2x, so 2 expectations will be required to catch both
   msg <- paste("The `sd.pars` argument list is missing these parameter(s):",
                "'tau0', 'tau1', 'tau01'.\nUsing default parameters: 2, 2, 0.5.")
-  expect_warning(sim_group <- createLongData(control = p1, treatment = p2),
+  expect_warning(sim_group <- create_long_data(control = p1, treatment = p2),
                  msg, fixed = TRUE) |>
     expect_warning(msg, fixed = TRUE)
 

@@ -4,7 +4,7 @@
 #'
 #' @family GLMMlasso
 #'
-#' @param data The `data.frame` containing RFU data to as columns.
+#' @param data The `data.frame` containing analysis data as columns.
 #' @param fixed The formula for the fixed effect. For
 #'   classification problems, the LHS of the fixed formula (endpoint) needs to be
 #'   re-coded to 1 or 0 (not strings or factors).
@@ -20,7 +20,7 @@
 #'   repeated k-fold cross-validation. Default is 1 (no repeats).
 #' @param .lambda The values for lambda in the lasso:
 #'   default is \verb{[0, 0.01, 0.1, 1, 10, 100, 1000]}.
-#' @param decision.threshold Numeric. The decision threshold
+#' @param decision_threshold `numeric(1)`. The decision threshold
 #'   to use for classification.
 #' @param subsample `character(1)`. The type of sub-sampling to perform.
 #'   See [splyr::rebalance()] `method =` argument.
@@ -36,7 +36,7 @@
 #' @param ... Additional arguments passed to the underlying
 #'   [glmmLasso::glmmLasso()] model fitting function.
 #'
-#' @return A `cvGlmmLasso` class object with components:
+#' @return A `cv_glmm_lasso` class object with components:
 #'   \item{metrics}{A `tibble` of cross-validation metrics.}
 #'   \item{formula}{The mixed-effects model formula.}
 #'   \item{model_type}{Either `classification` or `regression`.}
@@ -57,7 +57,7 @@
 #'     + A list column of model fit objects (`glmmLasso`)
 #'
 #' @author Gargi Datta & Stu Field
-#' @seealso [fitGlmmLasso()]
+#' @seealso [fit_glmm_lasso()]
 #'
 #' @importFrom purrr pmap
 #' @importFrom dplyr select filter bind_rows starts_with all_of
@@ -65,25 +65,26 @@
 #' @importFrom splyr rebalance
 #' @importFrom libml calc_confusion calc_emp_auc
 #' @importFrom stats cor
+#' @importFrom tibble tibble
 #' @export
-crossValidateGlmmLasso <- function(data,
-                                   fixed,
-                                   random,
-                                   family,
-                                   folds = 10,
-                                   .repeats = 1,
-                                   .lambda,
-                                   decision_threshold = 0.5,
-                                   subsample = NULL,
-                                   r_seed = 1234,
-                                   save_fits = FALSE,
-                                   save_splits = FALSE, ...) {
+cross_validate_glmm_lasso <- function(data,
+                                      fixed,
+                                      random,
+                                      family,
+                                      folds = 10L,
+                                      .repeats = 1,
+                                      .lambda,
+                                      decision_threshold = 0.5,
+                                      subsample = NULL,
+                                      r_seed = 1234,
+                                      save_fits = FALSE,
+                                      save_splits = FALSE, ...) {
 
   dots  <- list(...)
 
   if ( "random.seed" %in% names(dots) ) {
     stop(
-      "Please pass 'r.seed' argument as an integer. ",
+      "Please pass 'r_seed' argument as an integer. ",
       "You have passed 'random.seed' with value ",
       value(dots$random.seed), ".", call. = FALSE
     )
@@ -138,27 +139,27 @@ crossValidateGlmmLasso <- function(data,
 
   # set up metric functions ----
   # Internal closures
-  .getClassificationMetrics <- function(split, mod, probs, event,
-                                        decision.threshold, ...) {
-    auc <- libml::calcEmpAUC(truth = split[[event]], # 0/1 integer
-                             predicted = probs,
-                             pos.class = 1L)
+  get_classification_metrics <- function(split, mod, probs, event,
+                                         decision_threshold, ...) {
+    auc <- calc_emp_auc(truth = split[[event]], # 0/1 integer
+                        predicted = probs,
+                        pos.class = 1L)
     conf <- summary(
-      libml::calc_confusion(
-        truth     = factor(split[[event]]), # nolint
+      calc_confusion(
+        truth     = factor(split[[event]]), # nolint: indentation_linter.
         predicted = probs,
-        cutoff    = decision.threshold,
+        cutoff    = decision_threshold,
         pos.class = 1L)
     )$metrics
 
-    tibble::tibble(
+    tibble(
       Sensitivity = dplyr::filter(conf, metric == "Sensitivity")$estimate,
       Specificity = dplyr::filter(conf, metric == "Specificity")$estimate,
       auc         = auc
     )
   }
 
-  .getRegressionMetrics <- function(split, mod, probs, event, ...) {
+  get_regression_metrics <- function(split, mod, probs, event, ...) {
     p       <- length(mod$coefficients[mod$coefficients != 0])
     n       <- length(split)
     yhat    <- probs
@@ -168,15 +169,18 @@ crossValidateGlmmLasso <- function(data,
     # clipped to be greater than or equal to 0
     rsqAdj  <- (1 - (1 - rsqTrad) * (n - 1) / (n - p - 1)) |> max(0)
     rsqPred <- stats::cor(yhat, yobs)^2
-    tibble::tibble(rsqTrad = rsqTrad, rsqAdj = rsqAdj, rsqPred = rsqPred)
+    tibble(rsqTrad = rsqTrad, rsqAdj = rsqAdj, rsqPred = rsqPred)
   }
 
-  .fun <- switch(model.type, classification = .getClassificationMetrics,
-                                 regression = .getRegressionMetrics) # nolint
+  .fun <- switch(model_type,
+                 classification = get_classification_metrics,
+                 regression     = get_regression_metrics)
 
   # CV actually happens -----
-  data_sample <- withr::with_seed(r.seed,
-    rsample::vfold_cv(data, v = folds, repeats = .repeats, strata = all_of(event))
+  data_sample <- withr::with_seed(r_seed,
+    rsample::vfold_cv(data, v = folds,
+                      repeats = .repeats,
+                      strata = all_of(event))
   )
   rep_length  <- length(.lambda)
 
@@ -194,7 +198,7 @@ crossValidateGlmmLasso <- function(data,
   metrics$fit <- purrr::pmap(metrics, function(.anal, .lambda, ...) {
     if ( !is.null(subsample) ) {
       .anal <- withr::with_seed(
-        r.seed + 1, splyr::rebalance(.anal, event, subsample)
+        r_seed + 1, splyr::rebalance(.anal, event, subsample)
       )
     }
     dots$.data  <- .anal
@@ -209,7 +213,7 @@ crossValidateGlmmLasso <- function(data,
     dots$mod   <- fit
     dots$event <- event
     dots$probs <- predict(fit, .asses)
-    dots$decision.threshold <- decision.threshold
+    dots$decision_threshold <- decision_threshold
     dots$lambda <- if ( is.na(.lambda) ) NULL else .lambda # nolint
     do.call(.fun, dots)
   })
@@ -222,11 +226,11 @@ crossValidateGlmmLasso <- function(data,
     dplyr::select(-.anal, -.asses)
   metrics <- dplyr::bind_cols(bind_met, metrics) |> unnest(metrics)
 
-  if ( !save.splits ) {
+  if ( !save_splits ) {
     metrics <- dplyr::select(metrics, -.split)
   }
 
-  if ( !save.fits ) {
+  if ( !save_fits ) {
     metrics <- dplyr::select(metrics, -fit)
   }
 
@@ -235,29 +239,29 @@ crossValidateGlmmLasso <- function(data,
   out$fixed       <- fixed
   out$random      <- random
   out$family      <- family
-  out$model_type  <- model.type
+  out$model_type  <- model_type
   out$folds       <- folds
   out$.repeats    <- .repeats
-  out$random_seed <- r.seed
+  out$random_seed <- r_seed
   out$weights     <- dots$weights
-  add_class(out, "cvGlmmLasso")
+  add_class(out, "cv_glmm_lasso")
 }
 
 
-#' Check for `cvGlmmLasso` object
+#' Check for `cv_glmm_lasso` object
 #'
-#' For `is.cvGlmmLasso`: A logical test for objects of class `cvGlmmLasso`.
+#' For `is.cvGlmmLasso`: A logical test for objects of class `cv_glmm_lasso`.
 #'
-#' @rdname crossValidateGlmmLasso
-#' @param x An object to be tested for class `cvGlmmLasso`.
+#' @rdname cross_validate_glmm_lasso
+#' @param x An object to be tested for class `cv_glmm_lasso`.
 #'
 #' @export
-is.cvGlmmLasso <- function(x) inherits(x, "cvGlmmLasso")
+is_cv_glmm_lasso <- function(x) inherits(x, "cv_glmm_lasso")
 
 
 #' @noRd
 #' @export
-print.cvGlmmLasso <- function(x, ...) {
+print.cv_glmm_lasso <- function(x, ...) {
   signal_rule("Cross-validated Glmm Lasso", lty = "double", line_col = "blue")
   left <- c("Response",
             "Random effect",
@@ -281,11 +285,11 @@ print.cvGlmmLasso <- function(x, ...) {
 }
 
 
-#' @describeIn crossValidateGlmmLasso
-#'   S3 summary method for class `cvGlmmLasso`.
+#' @describeIn cross_validate_glmm_lasso
+#'   S3 summary method for class `cv_glmm_lasso`.
 #'
-#' @param object A `cvGlmmLasso` class object.
-#' @param CIalpha Significance level of the confidence
+#' @param object A `cv_glmm_lasso` class object.
+#' @param ci_alpha `double(1)`. Significance level of the confidence
 #'   interval for `alpha`.
 #'
 #' @importFrom dplyr select filter n any_of
@@ -293,7 +297,7 @@ print.cvGlmmLasso <- function(x, ...) {
 #' @importFrom tidyr drop_na unnest
 #' @importFrom stats quantile setNames
 #' @export
-summary.cvGlmmLasso <- function(object, CIalpha = 0.05, ...) {
+summary.cv_glmm_lasso <- function(object, ci_alpha = 0.05, ...) {
 
   object$metrics$.row <- seq_len(nrow(object$metrics))   # add row id
 
@@ -326,8 +330,8 @@ summary.cvGlmmLasso <- function(object, CIalpha = 0.05, ...) {
   `%na%` <- function(x, y) {
     if ( all(is.na(x)) ) NA_real_ else y(x, na.rm = TRUE)
   }
-  upper_ <- be_hard(stats::quantile, probs = (1 - CIalpha / 2), names = FALSE)
-  lower_ <- be_hard(stats::quantile, probs = (CIalpha / 2), names = FALSE)
+  upper_ <- be_hard(stats::quantile, probs = (1 - ci_alpha / 2), names = FALSE)
+  lower_ <- be_hard(stats::quantile, probs = (ci_alpha / 2), names = FALSE)
 
   .perf_metric <- function(.v) {   # .v a  vector to summarize
     data.frame(

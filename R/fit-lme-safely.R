@@ -35,7 +35,7 @@
 #' @author Stu Field
 #' @seealso [lme()]
 #' @examples
-#' long <- simulateLongData(r.seed = 101)
+#' long <- simulate_long_data(r_seed = 101)
 #' fit  <- fit_lme_safely(yij ~ time, random = ~1|pid, data = long)
 #' summary(fit)
 #' anova(fit)

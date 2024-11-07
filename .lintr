@@ -1,6 +1,6 @@
 linters: linters_with_defaults(
-  defaults = somaverse::soma_linters(),
-  object_name_linter = NULL    # too many FPs
+  defaults           = megaverse::full_linters(),
+  object_name_linter = NULL # too many FPs
   )
 exclusions: list(
   "R/createMixedEffectsTable.R" = 157,

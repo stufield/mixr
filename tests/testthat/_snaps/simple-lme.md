@@ -1,4 +1,4 @@
-# simpleLME returns correct model fixed slope
+# `simpleLME()` returns correct model fixed slope
 
     == Simple LMEs standard model ==================================================
       LME fit method         REML
@@ -16,7 +16,7 @@
     time         56.091    6.9825 97  8.0331 2.2820e-12
     ================================================================================
 
-# simpleLME returns correct model random slope
+# `simpleLME()` returns correct model random slope
 
     == Simple LMEs standard model ==================================================
       LME fit method         REML
@@ -34,7 +34,7 @@
     time         55.508    5.8673 97  9.4605 1.9614e-15
     ================================================================================
 
-# simpleLME returns model when comparing 2 data sets
+# `simplelme()` returns model when comparing 2 data sets
 
     == Simple LMEs ... 2 data set model comparison =================================
       (Intercept)    time
