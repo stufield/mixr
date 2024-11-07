@@ -3,12 +3,9 @@ linters: linters_with_defaults(
   object_name_linter = NULL # too many FPs
   )
 exclusions: list(
-  "R/createMixedEffectsTable.R" = 157,
-  "R/crossValidateGlmmLasso.R" = 181,
-  "R/simulateLongData.R" = 27,
+  "R/simulate-long-data.R" = 30,
+  "tests/testthat/test-cross-validate-glmm-lasso.R" = list(indentation_linter = Inf),
+  "tests/testthat/test-fit-glmm-lasso.R" = list(indentation_linter = Inf),
   "tests/testthat/helper.R",
-  "tests/testthat.R",
-  "tests/testthat/test-fitGlmmLasso.R",
-  "tests/testthat/test-crossValidateGlmmLasso.R",
-  "tests/testthat/test-createMixedEffectsTable.R"
+  "tests/testthat.R"
   )

@@ -204,7 +204,9 @@ test_that("`cross_validate_glmm_lasso()` for regression returns as expected", {
 })
 
 # Test down-sampling ----
-test_that("`cross_validate_glmm_lasso()` classifcation down-sampling returns as expected", {
+paste("`cross_validate_glmm_lasso()` classifcation with",
+      "down-sampling returns expected output") |>
+test_that({
   cvclass_down <- cross_validate_glmm_lasso(
     data               = log_data,
     fixed              = myclassform,

@@ -138,4 +138,3 @@ print.mixed_effects_table <- function(x, n = 6L, ...) {
   print(utils::head(x$stat.table, n))
   invisible(x)
 }
-
