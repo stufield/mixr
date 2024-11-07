@@ -38,9 +38,9 @@ variable either passed as a vector, or included as part of the data.}
 \examples{
 p1 <- list(beta1 = 50, r_seed = 101)
 p2 <- list(beta1 = 10, r_seed = 405)
-long_data  <- create_long_data(A = p1, B = p2)
+long_data <- create_long_data(A = p1, B = p2)
 fit <- fit_lme_safely(yij ~ time, random = ~1|pid, data = long_data)
-lme_diagnostic(fit, longData)  # all groups/pids together
+lme_diagnostic(fit, long_data)  # all groups/pids together
 
 # Group boxplots by sub-group
 lme_diagnostic(fit, long_data, group_by = "Group")  # slope A > B

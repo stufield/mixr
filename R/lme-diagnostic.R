@@ -27,9 +27,9 @@
 #' @examples
 #' p1 <- list(beta1 = 50, r_seed = 101)
 #' p2 <- list(beta1 = 10, r_seed = 405)
-#' long_data  <- create_long_data(A = p1, B = p2)
+#' long_data <- create_long_data(A = p1, B = p2)
 #' fit <- fit_lme_safely(yij ~ time, random = ~1|pid, data = long_data)
-#' lme_diagnostic(fit, longData)  # all groups/pids together
+#' lme_diagnostic(fit, long_data)  # all groups/pids together
 #'
 #' # Group boxplots by sub-group
 #' lme_diagnostic(fit, long_data, group_by = "Group")  # slope A > B
@@ -41,8 +41,7 @@
 #' @importFrom stats coefficients as.formula
 #' @importFrom tidyr drop_na pivot_longer
 #' @importFrom ggplot2 ggplot aes coord_flip geom_point geom_boxplot
-#' @importFrom ggplot2 position_jitterdodge labs
-#' @importFrom withr with_namespace
+#' @importFrom ggplot2 position_jitterdodge labs discrete_scale
 #' @export
 lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
@@ -61,10 +60,12 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
   lm_fits <- lmList(form, data = data, ...)
   lm_intr <- nlme::intervals(lm_fits)
-  p1 <- plot(lm_intr, main = sprintf("Subject Specific Coefficients | %s", fixed))
+  p1 <- plot(lm_intr,
+             main = sprintf("Subject Specific Coefficients | %s", fixed))
 
   if ( !is.null(group_by) ) {
-    if ( is.character(group_by) && length(group_by) == 1L && group_by %in% names(data) ) {
+    if ( is.character(group_by) && length(group_by) == 1L &&
+          group_by %in% names(data) ) {
       data <- split(data, data[[group_by]])
     } else if ( length(group_by) == nrow(data) ) {
       data <- split(data, group_by)
@@ -83,12 +84,16 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
   p2 <- id_data |>
     ggplot(aes(x = coef, y = value, fill = Group)) +
     geom_boxplot(alpha = 0.7, outlier.size = 0, notch = TRUE) +
-    SomaPlotr::scale_fill_soma() +
+    discrete_scale("fill",
+                   palette = function(n) {
+                     rep_len(unlist(col_palette, use.names = FALSE),
+                             length.out = n)
+                   }) +
     geom_point(pch = 21, alpha = 0.5, size = 2.5,
                position = position_jitterdodge(jitter.width = 0.05,
                                                seed = 1)) +
     labs(x = "", y = "") +
     coord_flip()
 
-  with_namespace("patchwork", p1 + p2)
+  gridExtra::grid.arrange(p1, p2, ncol = 2L)
 }
