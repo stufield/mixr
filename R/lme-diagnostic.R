@@ -42,6 +42,7 @@
 #' @importFrom tidyr drop_na pivot_longer
 #' @importFrom ggplot2 ggplot aes coord_flip geom_point geom_boxplot
 #' @importFrom ggplot2 position_jitterdodge labs
+#' @importFrom withr with_namespace
 #' @export
 lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
@@ -84,10 +85,10 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
     geom_boxplot(alpha = 0.7, outlier.size = 0, notch = TRUE) +
     SomaPlotr::scale_fill_soma() +
     geom_point(pch = 21, alpha = 0.5, size = 2.5,
-                        position = position_jitterdodge(jitter.width = 0.05,
-                                                        seed = 1)) +
+               position = position_jitterdodge(jitter.width = 0.05,
+                                               seed = 1)) +
     labs(x = "", y = "") +
     coord_flip()
 
-  withr::with_namespace("patchwork", p1 + p2)
+  with_namespace("patchwork", p1 + p2)
 }

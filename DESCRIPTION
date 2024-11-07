@@ -36,7 +36,6 @@ Suggests:
     MASS,
     rmarkdown,
     rsample,
-    SomaPlotr,
     spelling,
     testthat
 VignetteBuilder: 

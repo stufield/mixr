@@ -37,6 +37,7 @@
 #' head(long)
 #' @importFrom stats arima.sim
 #' @importFrom tibble tibble
+#' @importFrom withr with_seed
 #' @export
 simulate_long_data <- function(nsubj = 20L, beta0 = 1000,
                                beta1 = 10, max_obs = 10,
@@ -79,7 +80,7 @@ simulate_long_data <- function(nsubj = 20L, beta0 = 1000,
     list(p = p, times = unlist(times))
   }
 
-  tseries <- withr::with_seed(r_seed, get_timecourse())
+  tseries <- with_seed(r_seed, get_timecourse())
 
   # set up data frame ----
   df <- tibble(pid = rep(1:nsubj, times = tseries$p), time = tseries$times)
@@ -89,12 +90,12 @@ simulate_long_data <- function(nsubj = 20L, beta0 = 1000,
   S   <- matrix(c(1, tau01, tau01, 1), nrow = 2)   # correlation matrix
   tau <- c(tau0, tau1)
   S   <- diag(tau) %*% S %*% diag(tau)          # convert to covariance matrix
-  U   <- withr::with_seed(r_seed, MASS::mvrnorm(nsubj, mu = mu, Sigma = S))
+  U   <- with_seed(r_seed, MASS::mvrnorm(nsubj, mu = mu, Sigma = S))
 
   # simulate AR(1) errors and then the actual outcomes
   # note: use arima.sim(model=list(ar=ar.val), n=x) * sqrt(1-ar.val^2) * sigma
   # construction, so that the true error SD is equal to sigma
-  eij <- withr::with_seed(
+  eij <- with_seed(
     r_seed,
     lapply(tseries$p, function(.x) {
       stats::arima.sim(model = list(ar = auto_cor), n = .x) *

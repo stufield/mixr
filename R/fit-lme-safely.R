@@ -40,6 +40,7 @@
 #' summary(fit)
 #' anova(fit)
 #' @importFrom nlme lme lmeControl lme.formula
+#' @importFrom withr with_options
 #' @export
 fit_lme_safely <- function(formula, ...) {
 
@@ -75,7 +76,7 @@ fit_lme_safely <- function(formula, ...) {
 
   if ( is.null(model) ) {
     signal_oops("No convergence for ...", value(apt))
-    model <- withr::with_options(
+    model <- with_options(
       c(warn = -1),                 # give up and return non-converged object
       nlme::lme(formula, ..., control = lmeControl(returnObject = TRUE))
     )

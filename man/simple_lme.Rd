@@ -2,15 +2,15 @@
 % Please edit documentation in R/simple-lme.R
 \name{simple_lme}
 \alias{simple_lme}
-\alias{plot.simple_LME}
 \alias{print.simple_LME}
+\alias{plot.simple_LME}
 \title{Create Simple lme Models}
 \usage{
 simple_lme(data, response, fixed, grouping, random_slope = TRUE, ...)
 
-\method{plot}{simple_LME}(x, col = "blue", pt_col = "black", groups = NULL, ...)
-
 \method{print}{simple_LME}(x, ...)
+
+\method{plot}{simple_LME}(x, col = "blue", pt_col = "black", groups = NULL, ...)
 }
 \arguments{
 \item{data}{Either a data frame or a \emph{named} list of
@@ -58,10 +58,10 @@ with names of the fixed covariate and grouping variables.
 }
 \section{Functions}{
 \itemize{
+\item \code{print(simple_LME)}: S3 method print method for \code{simple_LME} model object.
+
 \item \code{plot(simple_LME)}: S3 method plots the points and fit for each of the
 random effects in a \code{\link[=simple_lme]{simple_lme()}} model object.
-
-\item \code{print(simple_LME)}: S3 method print method for \code{simple_LME} model object.
 
 }}
 \examples{
@@ -83,7 +83,7 @@ model3
 plot(model)
 
 # plot only certain subjects/groups
-plot(model, groups = seq(1, 11, by = 2), pt.col = "purple")
+plot(model, groups = seq(1, 11, by = 2), pt_col = "purple")
 }
 \seealso{
 \code{\link[=fit_lme_safely]{fit_lme_safely()}}

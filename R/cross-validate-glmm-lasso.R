@@ -66,6 +66,7 @@
 #' @importFrom libml calc_confusion calc_emp_auc
 #' @importFrom stats cor
 #' @importFrom tibble tibble
+#' @importFrom withr with_seed
 #' @export
 cross_validate_glmm_lasso <- function(data,
                                       fixed,
@@ -177,7 +178,7 @@ cross_validate_glmm_lasso <- function(data,
                  regression     = get_regression_metrics)
 
   # CV actually happens -----
-  data_sample <- withr::with_seed(r_seed,
+  data_sample <- with_seed(r_seed,
     rsample::vfold_cv(data, v = folds,
                       repeats = .repeats,
                       strata = all_of(event))
@@ -197,7 +198,7 @@ cross_validate_glmm_lasso <- function(data,
   # Fit models ----
   metrics$fit <- purrr::pmap(metrics, function(.anal, .lambda, ...) {
     if ( !is.null(subsample) ) {
-      .anal <- withr::with_seed(
+      .anal <- with_seed(
         r_seed + 1, splyr::rebalance(.anal, event, subsample)
       )
     }

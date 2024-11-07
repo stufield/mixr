@@ -93,65 +93,6 @@ simple_lme <- function(data, response, fixed, grouping, random_slope = TRUE, ...
 }
 
 
-# nocov start
-
-# Plots a Random Effect from a simple_lme
-
-#' @describeIn simple_lme
-#'   S3 method plots the points and fit for each of the
-#'   random effects in a [simple_lme()] model object.
-#'
-#' @param x An `simple_LME` class object.
-#' @param col The color of the lines. See [ggplot2::geom_smooth()].
-#' @param pt_col The color of the points. See [ggplot2::geom_point()].
-#' @param groups `numeric(n)`. Indices indicating the *optional* subset of
-#'   groups (e.g. subjects) to be plotted for the random effects.
-#'
-#' @author Michael R. Mehan, Stu Field
-#'
-#' @examples
-#' # S3 plot method
-#' plot(model)
-#'
-#' # plot only certain subjects/groups
-#' plot(model, groups = seq(1, 11, by = 2), pt.col = "purple")
-#' @importFrom stats predict
-#' @importFrom rlang sym
-#' @importFrom ggplot2 ggplot aes geom_point geom_smooth vars facet_wrap
-#' @export
-plot.simple_LME <- function(x, col = "blue", pt_col = "black",
-                            groups = NULL, ...) {
-
-  if ( x$compare_data ) {
-    stop(
-      "Not appropriate to plot 2 dataset comparsion objects ... ",
-      "data: ", value(names(x$data)), call. = FALSE
-    )
-  }
-
-  if ( is.null(x$response) ) {
-    signal_oops("Unable to get response ...")
-  }
-
-  data     <- x$data
-  grouping <- rlang::sym(x$grouping)
-  response <- rlang::sym(x$response)
-  fixed    <- rlang::sym(x$fixed)
-
-  if ( !is.null(groups) ) {
-    data <- dplyr::filter(data, !!rlang::sym(grouping) %in% groups)
-  }
-
-  p <- data |>
-    ggplot(aes(x = !! fixed, y = !! response)) +
-    geom_point(alpha = 0.5, colour = pt_col, size = 3) +
-    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = col) +
-    facet_wrap(vars(!!grouping))
-
-  p
-}
-
-
 #' @describeIn simple_lme
 #'   S3 method print method for `simple_LME` model object.
 #'
@@ -209,5 +150,62 @@ print.simple_LME <- function(x, ...) {
   }
   signal_rule(line_col = "green", lty = "double")
   invisible(x)
+}
+
+
+# nocov start
+
+#' @describeIn simple_lme
+#'   S3 method plots the points and fit for each of the
+#'   random effects in a [simple_lme()] model object.
+#'
+#' @param x An `simple_LME` class object.
+#' @param col The color of the lines. See [ggplot2::geom_smooth()].
+#' @param pt_col The color of the points. See [ggplot2::geom_point()].
+#' @param groups `numeric(n)`. Indices indicating the *optional* subset of
+#'   groups (e.g. subjects) to be plotted for the random effects.
+#'
+#' @author Michael R. Mehan, Stu Field
+#'
+#' @examples
+#' # S3 plot method
+#' plot(model)
+#'
+#' # plot only certain subjects/groups
+#' plot(model, groups = seq(1, 11, by = 2), pt_col = "purple")
+#' @importFrom stats predict
+#' @importFrom rlang sym
+#' @importFrom ggplot2 ggplot aes geom_point geom_smooth vars facet_wrap
+#' @export
+plot.simple_LME <- function(x, col = "blue", pt_col = "black",
+                            groups = NULL, ...) {
+
+  if ( x$compare_data ) {
+    stop(
+      "Not appropriate to plot 2 dataset comparsion objects ... ",
+      "data: ", value(names(x$data)), call. = FALSE
+    )
+  }
+
+  if ( is.null(x$response) ) {
+    signal_oops("Unable to get response ...")
+  }
+
+  data     <- x$data
+  grouping <- rlang::sym(x$grouping)
+  response <- rlang::sym(x$response)
+  fixed    <- rlang::sym(x$fixed)
+
+  if ( !is.null(groups) ) {
+    data <- dplyr::filter(data, !!rlang::sym(grouping) %in% groups)
+  }
+
+  p <- data |>
+    ggplot(aes(x = !! fixed, y = !! response)) +
+    geom_point(alpha = 0.5, colour = pt_col, size = 3) +
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = col) +
+    facet_wrap(vars(!!grouping))
+
+  p
 }
 # nocov end

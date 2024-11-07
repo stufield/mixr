@@ -44,6 +44,7 @@
 #' @importFrom stats p.adjust anova runif setNames
 #' @importFrom dplyr sym mutate arrange row_number select everything
 #' @importFrom dplyr ends_with starts_with filter row_number bind_rows
+#' @importFrom withr with_preserve_seed
 #' @export
 create_mixed_effects_tbl <- function(x) {
 
@@ -105,7 +106,7 @@ create_mixed_effects_tbl <- function(x) {
   pids                  <- dims$ngrps[dims$Q[1L]]
   ret_list$PIDfield     <- attributes(x)$PIDfield
   ret_list$subjects     <- unname(pids)
-  if ( withr::with_preserve_seed(runif(1) < 0.25) ) give_praise()
+  if ( with_preserve_seed(runif(1) < 0.25) ) give_praise()
   ret_list |>
     add_class(c("stat_table", "mixed_effects_table"))
 }

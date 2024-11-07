@@ -19,8 +19,7 @@ test_that("`simpleLME()` returns correct model fixed slope", {
   expect_equal(model$fixed, "time")
   expect_equal(as.character(model$random), c("~", "time | pid"))
   expect_equal(model$grouping, "pid")
-  # Print method
-  expect_snapshot_output(model)
+  expect_snapshot_output(model)   # print method
 })
 
 test_that("`simpleLME()` returns correct model random slope", {
@@ -32,8 +31,7 @@ test_that("`simpleLME()` returns correct model random slope", {
   expect_equal(model$fixed, "time")
   expect_equal(as.character(model$random), c("~", "1 | pid"))
   expect_equal(model$grouping, "pid")
-  # Print method
-  expect_snapshot_output(model)
+  expect_snapshot_output(model) # print method
 })
 
 # Compare 2 data sets -------
@@ -47,8 +45,7 @@ test_that("`simplelme()` returns model when comparing 2 data sets", {
   expect_equal(model$fixed, "time")
   expect_equal(as.character(model$random), c("~", "time | pid"))
   expect_equal(model$grouping, "pid")
-  # Print method
-  expect_snapshot_output(model)
+  expect_snapshot_output(model) # print method
 })
 
 test_that("`simple_lme()` trips error when data list is not named", {
