@@ -251,7 +251,8 @@ cross_validate_glmm_lasso <- function(data,
 
 #' Check for `cv_glmm_lasso` object
 #'
-#' For `is.cvGlmmLasso`: A logical test for objects of class `cv_glmm_lasso`.
+#' For `is_cv_glmm_lasso`: A logical test for
+#'   the `cv_glmm_lasso` class.
 #'
 #' @rdname cross_validate_glmm_lasso
 #' @param x An object to be tested for class `cv_glmm_lasso`.

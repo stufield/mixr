@@ -13,25 +13,26 @@
 #'   using [fit_mixed_effects_models()]. Alternatively, an object of
 #'   class `"mixed_effects_table"` for the S3 print method.
 #'
-#' @return A list object of class `mixed_effects_table` with the
-#' following components:
-#' \item{stat_table}{A data frame (table) of the results:
-#' \describe{
-#'   \item{Time effect:}{Both F-values and p-values for TimePoint}
-#'   \item{Group effect:}{Both F-values and p-values for Group}
-#'   \item{p_value:}{Unadjusted p-values for the KS-distances}
-#'   \item{fdr:}{FDR adjustment to p-values}
-#'   \item{p_bonferroni:}{Bonferroni corrected p-value}
-#'   \item{rank:}{Ranking by the test significance.}
-#' }}
-#' \item{test}{The name of the model fit, "Linear Mixed-effects Model".}
-#' \item{call}{The direct call made the [fit_mixed_effects_models()].}
-#' \item{data_dim}{The dimensions of the data frame.}
-#' \item{method}{The fitting method used by `lme`.}
-#' \item{fixed}{The fixed-effects.}
-#' \item{observations}{The number of total observations.}
-#' \item{PIDfield}{The field name identifying the subjects in the data frame.}
-#' \item{subjects}{The number of subjects.}
+#' @return A `mixed_effects_table` class object with the
+#'   following components:
+#'   \item{stat_table}{A data frame (table) of the results:
+#'   \describe{
+#'     \item{Time effect:}{Both F-values and p-values for TimePoint}
+#'     \item{Group effect:}{Both F-values and p-values for Group}
+#'     \item{p_value:}{Unadjusted p-values for the KS-distances}
+#'     \item{fdr:}{FDR adjustment to p-values}
+#'     \item{p_bonferroni:}{Bonferroni corrected p-value}
+#'     \item{rank:}{Ranking by the test significance.}
+#'     }
+#'   }
+#'   \item{test}{The name of the model fit, "Linear Mixed-effects Model".}
+#'   \item{call}{The direct call made the [fit_mixed_effects_models()].}
+#'   \item{data_dim}{The dimensions of the data frame.}
+#'   \item{method}{The fitting method used by `lme`.}
+#'   \item{fixed}{The fixed-effects.}
+#'   \item{observations}{The number of total observations.}
+#'   \item{PIDfield}{The field name identifying the subjects in the data frame.}
+#'   \item{subjects}{The number of subjects.}
 #'
 #' @author Stu Field
 #'

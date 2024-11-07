@@ -42,7 +42,7 @@ by default S3 print methods.}
 A list (invisibly) of fitted linear mixed-effects response models
 (\code{class = lme}) with extra attributes attached for print methods.
 
-A list object of class \code{mixed_effects_table} with the
+A \code{mixed_effects_table} class object with the
 following components:
 \item{stat_table}{A data frame (table) of the results:
 \describe{
@@ -52,7 +52,8 @@ following components:
 \item{fdr:}{FDR adjustment to p-values}
 \item{p_bonferroni:}{Bonferroni corrected p-value}
 \item{rank:}{Ranking by the test significance.}
-}}
+}
+}
 \item{test}{The name of the model fit, "Linear Mixed-effects Model".}
 \item{call}{The direct call made the \code{\link[=fit_mixed_effects_models]{fit_mixed_effects_models()}}.}
 \item{data_dim}{The dimensions of the data frame.}

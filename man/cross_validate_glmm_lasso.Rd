@@ -108,7 +108,8 @@ contains the following columns:
 \description{
 Fit cross-validated models for \code{\link[glmmLasso:glmmLasso]{glmmLasso::glmmLasso()}}.
 
-For \code{is.cvGlmmLasso}: A logical test for objects of class \code{cv_glmm_lasso}.
+For \code{is_cv_glmm_lasso}: A logical test for
+the \code{cv_glmm_lasso} class.
 }
 \section{Functions}{
 \itemize{
