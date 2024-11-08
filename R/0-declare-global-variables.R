@@ -8,12 +8,16 @@
 if ( getRversion() >= "2.15.1" )
   utils::globalVariables(
     c(".",
+      ".data",
       ".anal",
       ".asses",
       ".lambda",
       ".split",
       "auc",
       "coef",
+      "estimate",
+      "lower",
+      "upper",
       "fit",
       "Group",
       "Intercept",

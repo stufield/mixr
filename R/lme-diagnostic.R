@@ -41,7 +41,8 @@
 #' @importFrom stats coefficients as.formula
 #' @importFrom tidyr drop_na pivot_longer
 #' @importFrom ggplot2 ggplot aes coord_flip geom_point geom_boxplot
-#' @importFrom ggplot2 position_jitterdodge labs discrete_scale
+#' @importFrom ggplot2 position_jitterdodge discrete_scale
+#' @importFrom ggplot2 facet_wrap ggtitle element_text geom_pointrange
 #' @export
 lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
@@ -60,8 +61,26 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
   lm_fits <- lmList(form, data = data, ...)
   lm_intr <- nlme::intervals(lm_fits)
-  p1 <- plot(lm_intr,
-             main = sprintf("Subject Specific Coefficients | %s", fixed))
+  array_depth <- length(dim(lm_intr))
+  nms <- set_Names(dimnames(lm_intr)[[array_depth]])
+
+  # re-arrange interval data
+  int_data <- lapply(nms, function(.x) {
+    rn2col(data.frame(lm_intr[, , .x]), random)   # random is pid
+  }) |>
+    bind_rows(.id = "parameter") |>
+    dplyr::rename(estimate = "est.") |>
+    as_tibble()
+  int_data$parameter <- factor(int_data$parameter)  # factor
+  int_data[[random]] <- factor(int_data[[random]])  # factor
+
+  base <- ggplot(int_data, aes(x = .data[[random]], y = estimate))
+  p1 <- base +
+    geom_pointrange(aes(ymin = lower, ymax = upper), size = 0.2, alpha = 0.75) +
+    coord_flip() +
+    facet_wrap(~parameter, scales = "free_x") +
+    ggtitle(sprintf("Subject Specific Coefficients | %s", fixed)) +
+    NULL
 
   if ( !is.null(group_by) ) {
     if ( is.character(group_by) && length(group_by) == 1L &&
@@ -83,7 +102,7 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
 
   p2 <- id_data |>
     ggplot(aes(x = coef, y = value, fill = Group)) +
-    geom_boxplot(alpha = 0.7, outlier.size = 0, notch = TRUE) +
+    suppressWarnings(geom_boxplot(alpha = 0.7, outlier.size = 0, notch = TRUE)) +
     discrete_scale("fill",
                    palette = function(n) {
                      rep_len(unlist(col_palette, use.names = FALSE),
@@ -92,8 +111,9 @@ lme_diagnostic <- function(model, data = NULL, group_by = NULL, ...) {
     geom_point(pch = 21, alpha = 0.5, size = 2.5,
                position = position_jitterdodge(jitter.width = 0.05,
                                                seed = 1)) +
-    labs(x = "", y = "") +
-    coord_flip()
+    ggtitle("Model Coefficients by Group") +
+    NULL
 
-  gridExtra::grid.arrange(p1, p2, ncol = 2L)
+
+  withr::with_package("patchwork", p1 + p2)
 }
