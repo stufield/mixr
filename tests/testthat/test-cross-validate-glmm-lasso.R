@@ -2,7 +2,7 @@
 skip("fix when libml conflict is resolved; see /inst")
 
 # Setup ----
-log_data <- log_rfu(splyr::sim_adat)
+log_data <- log_rfu(wranglr::simdata)
 # bootstrap re-sample: n = 300
 log_data <- withr::with_seed(101, slice_sample(log_data, n = 300, replace = TRUE))
 apts     <- get_analytes(log_data)

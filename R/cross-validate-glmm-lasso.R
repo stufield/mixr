@@ -23,7 +23,7 @@
 #' @param decision_threshold `numeric(1)`. The decision threshold
 #'   to use for classification.
 #' @param subsample `character(1)`. The type of sub-sampling to perform.
-#'   See [splyr::rebalance()] `method =` argument.
+#'   See [wranglr::rebalance()] `method =` argument.
 #'   Defaults to "none" (`NULL`).
 #' @param r_seed `integer(1)`. Value to set the random seed.
 #' @param save_fits `logical(1)`. Should individual model fits for each
@@ -62,7 +62,7 @@
 #' @importFrom purrr pmap
 #' @importFrom dplyr select filter bind_rows starts_with all_of
 #' @importFrom tidyr unnest
-#' @importFrom splyr rebalance
+#' @importFrom wranglr rebalance
 #' @importFrom libml calc_confusion calc_emp_auc
 #' @importFrom stats cor
 #' @importFrom tibble tibble
@@ -144,13 +144,13 @@ cross_validate_glmm_lasso <- function(data,
                                          decision_threshold, ...) {
     auc <- calc_emp_auc(truth = split[[event]], # 0/1 integer
                         predicted = probs,
-                        pos.class = 1L)
+                        pos_class = 1L)
     conf <- summary(
       calc_confusion(
         truth     = factor(split[[event]]), # nolint: indentation_linter.
         predicted = probs,
         cutoff    = decision_threshold,
-        pos.class = 1L)
+        pos_class = 1L)
     )$metrics
 
     tibble(
@@ -199,7 +199,7 @@ cross_validate_glmm_lasso <- function(data,
   metrics$fit <- purrr::pmap(metrics, function(.anal, .lambda, ...) {
     if ( !is.null(subsample) ) {
       .anal <- with_seed(
-        r_seed + 1, splyr::rebalance(.anal, event, subsample)
+        r_seed + 1, wranglr::rebalance(.anal, event, subsample)
       )
     }
     dots$.data  <- .anal

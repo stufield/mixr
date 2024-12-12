@@ -24,7 +24,7 @@ Imports:
     purrr,
     rlang,
     tibble,
-    splyr,
+    wranglr,
     tidyr,
     withr
 Suggests:

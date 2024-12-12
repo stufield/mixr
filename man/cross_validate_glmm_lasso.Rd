@@ -54,7 +54,7 @@ default is \verb{[0, 0.01, 0.1, 1, 10, 100, 1000]}.}
 to use for classification.}
 
 \item{subsample}{\code{character(1)}. The type of sub-sampling to perform.
-See \code{\link[splyr:rebalance]{splyr::rebalance()}} \verb{method =} argument.
+See \code{\link[wranglr:rebalance]{wranglr::rebalance()}} \verb{method =} argument.
 Defaults to "none" (\code{NULL}).}
 
 \item{r_seed}{\code{integer(1)}. Value to set the random seed.}
