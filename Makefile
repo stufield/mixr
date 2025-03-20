@@ -42,9 +42,6 @@ build: docs
 	@ cd ..;\
 	$(RCMD) build --resave-data $(PKGSRC)
 
-pkgdown: docs
-	@ $(RSCRIPT) inst/deploy-pkgdown.R
-
 check: build
 	@ cd ..;\
 	$(RCMD) check --no-manual $(PKGNAME)_$(PKGVERS).tar.gz
