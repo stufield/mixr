@@ -12,13 +12,22 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-"
 )
+ver <- desc::desc_get_version(".")
+ver <- paste0("https://img.shields.io/badge/Version-", ver,
+              "-success.svg?style=flat&logo=github")
 ```
 
 
 # The `mixr` package
 
 <!-- badges: start -->
-
+![GitHub version](`r ver`)
+[![CRAN status](http://www.r-pkg.org/badges/version/mixr)](https://cran.r-project.org/package=mixr)
+[![R-CMD-check](https://github.com/stufield/mixr/workflows/R-CMD-check/badge.svg)](https://github.com/stufield/mixr/actions)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/mixr)](https://cran.r-project.org/package=mixr)
+[![Codecov test coverage](https://codecov.io/gh/stufield/mixr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/stufield/mixr?branch=main)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://choosealicense.com/licenses/mit/)
 <!-- badges: end -->
 
 
@@ -39,7 +48,11 @@ features as the response variable.
 
 
 ```{r install-git, eval = FALSE}
+# current dev version
 remotes::install_github("stufield/mixr")
+
+# or a specific version
+remotes::install_github("stufield/mixr@v0.0.1")
 ```
 
 
@@ -67,10 +80,5 @@ library(help = mixr)
 * The `mixr` package is easy to use.
 * There is some cool stuff we can do.
 
-
------------------
-
-
-#### LICENSE
 
 

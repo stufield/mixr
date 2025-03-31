@@ -12,7 +12,8 @@ Authors@R: c(
 Description: The mixr package fits linear mixed-effects models, centered around
     the 'nlme' package. It is centered around fitting many models of identical
     form, from a list of features as the response variable.
-License: GPL-3 | file LICENSE
+License: MIT + file LICENSE
+URL: https://stufield.github.io/mixr
 Depends:
     R (>= 4.1.0),
     helpr
