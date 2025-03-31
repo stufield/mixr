@@ -8,6 +8,13 @@
 \description{
 The mixr package fits linear mixed-effects models, centered around the 'nlme' package. It is centered around fitting many models of identical form, from a list of features as the response variable.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://stufield.github.io/mixr}
+}
+
+}
 \author{
 \strong{Maintainer}: Stu Field \email{stu.g.field@gmail.com} (\href{https://orcid.org/0000-0002-1024-5859}{ORCID}) [copyright holder]
 
